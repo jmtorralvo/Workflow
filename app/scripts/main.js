@@ -1,12 +1,16 @@
-/*exported runtime */
+/*exported runtime, utils, TranslateAPI */
 
 import * as runtime from './modules/runtime';
 import * as utils from './modules/utils';
 /// Classes
-import {AjaxRequest} from './modules/ajaxRequest';
-import {TranslateAPI, ColorPoint} from './modules/translateAPI';
+import {TranslateAPI} from './modules/translateAPI';
 import {WorkflowApp} from './modules/workflowApp';
 
 
+var app = new WorkflowApp($('#section-view'), $('#workflow-navbar'));
+app.config();
 
-var app = new WorkflowApp($('#section-view'));
+
+var myModel = {};
+
+DataBind.bind($('#section-view'), myModel);

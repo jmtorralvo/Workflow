@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*exported runtime */
+/*exported runtime, utils, TranslateAPI */
 
 'use strict';
 
@@ -15,15 +15,18 @@ var utils = _interopRequireWildcard(_modulesUtils);
 
 /// Classes
 
-var _modulesAjaxRequest = require('./modules/ajaxRequest');
-
 var _modulesTranslateAPI = require('./modules/translateAPI');
 
 var _modulesWorkflowApp = require('./modules/workflowApp');
 
-var app = new _modulesWorkflowApp.WorkflowApp($('#section-view'));
+var app = new _modulesWorkflowApp.WorkflowApp($('#section-view'), $('#workflow-navbar'));
+app.config();
 
-},{"./modules/ajaxRequest":2,"./modules/runtime":3,"./modules/translateAPI":4,"./modules/utils":5,"./modules/workflowApp":6}],2:[function(require,module,exports){
+var myModel = {};
+
+DataBind.bind($('#section-view'), myModel);
+
+},{"./modules/runtime":3,"./modules/translateAPI":4,"./modules/utils":5,"./modules/workflowApp":6}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -755,7 +758,7 @@ typeof global === "object" ? global : typeof window === "object" ? window : type
 /* jshint ignore:start */
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":7}],4:[function(require,module,exports){
+},{"_process":8}],4:[function(require,module,exports){
 /*exported TranslateAPI */
 /*global AjaxRequest */
 
@@ -829,6 +832,7 @@ function odd(num) {
 }
 
 },{}],6:[function(require,module,exports){
+/*exported WorkflowNavbar */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -839,24 +843,38 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var _workflowNavbar = require('./workflowNavbar');
+
 var WorkflowApp = (function () {
-    function WorkflowApp(elem) {
+    function WorkflowApp(elem, navbar) {
         _classCallCheck(this, WorkflowApp);
 
-        console.log('WorkflowApp', elem);
         this.elem = elem;
+        this.navbar = navbar;
+        this.state = 'home';
     }
 
     _createClass(WorkflowApp, [{
         key: 'init',
         value: function init() {
             console.log('init');
-            //this.config();
+            this.config();
         }
     }, {
         key: 'config',
         value: function config() {
-            console.log('sq');
+            console.log('config');
+        }
+    }, {
+        key: 'changeState',
+        value: function changeState(newState) {
+            this.state = newState;
+            this.elem.load('sections/' + newState + '.html', function (name, status) {});
+        }
+    }, {
+        key: 'getState',
+        value: function getState() {
+            return this.state;
         }
     }]);
 
@@ -865,7 +883,35 @@ var WorkflowApp = (function () {
 
 exports.WorkflowApp = WorkflowApp;
 
-},{}],7:[function(require,module,exports){
+},{"./workflowNavbar":7}],7:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+   value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var WorkflowNavbar = (function () {
+   function WorkflowNavbar(elem) {
+      _classCallCheck(this, WorkflowNavbar);
+
+      console.log(elem);
+   }
+
+   _createClass(WorkflowNavbar, [{
+      key: "init",
+      value: function init() {}
+   }]);
+
+   return WorkflowNavbar;
+})();
+
+exports.WorkflowNavbar = WorkflowNavbar;
+
+},{}],8:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
