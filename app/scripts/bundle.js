@@ -19,89 +19,100 @@ var _modulesAjaxRequest = require('./modules/ajaxRequest');
 
 var _modulesTranslateAPI = require('./modules/translateAPI');
 
-new _modulesAjaxRequest.AjaxRequest();
-new _modulesTranslateAPI.TranslateAPI();
+var _modulesWorkflowApp = require('./modules/workflowApp');
 
-console.log(utils);
+var app = new _modulesWorkflowApp.WorkflowApp($('#section-view'));
 
-},{"./modules/ajaxRequest":2,"./modules/runtime":3,"./modules/translateAPI":4,"./modules/utils":5}],2:[function(require,module,exports){
+},{"./modules/ajaxRequest":2,"./modules/runtime":3,"./modules/translateAPI":4,"./modules/utils":5,"./modules/workflowApp":6}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var AjaxRequest = function AjaxRequest() {
-    _classCallCheck(this, AjaxRequest);
+var AjaxRequest = (function () {
+    function AjaxRequest() {
+        _classCallCheck(this, AjaxRequest);
 
-    console.log('ajaxReq');
-    this.get = get;
-    this.post = post;
-    this.put = put;
-    this.del = del;
-
-    function get(config) {
-        console.log('get', config);
-
-        var peticionConfig = {
-            url: null,
-            params: null,
-            timeout: null
-        };
-        peticionConfig = $.extend({}, peticionConfig, config);
-        return $.ajax({
-            method: 'GET',
-            url: peticionConfig.url
-        });
+        console.log('ajaxReq');
+        /*this.getF = getF;
+        this.post = post; 
+        this.put = put;
+        this.del = del;  */
     }
 
-    function post(config) {
-        var peticionConfig = {
-            url: null,
-            params: null,
-            timeout: null
-        };
-        peticionConfig = $.extend({}, peticionConfig, config);
+    _createClass(AjaxRequest, [{
+        key: 'get',
+        value: function get(config) {
+            console.log('get', config);
 
-        return $.ajax({
-            method: 'POST',
-            url: peticionConfig.url,
-            params: peticionConfig.params
-        });
-    }
+            var peticionConfig = {
+                url: null,
+                params: null,
+                timeout: null
+            };
+            peticionConfig = $.extend({}, peticionConfig, config);
+            return $.ajax({
+                method: 'GET',
+                url: peticionConfig.url
+            });
+        }
+    }, {
+        key: 'post',
+        value: function post(config) {
+            var peticionConfig = {
+                url: null,
+                params: null,
+                timeout: null
+            };
+            peticionConfig = $.extend({}, peticionConfig, config);
 
-    function put(config) {
-        var peticionConfig = {
-            url: null,
-            params: null,
-            timeout: null
-        };
-        peticionConfig = $.extend({}, peticionConfig, config);
+            return $.ajax({
+                method: 'POST',
+                url: peticionConfig.url,
+                params: peticionConfig.params
+            });
+        }
+    }, {
+        key: 'put',
+        value: function put(config) {
+            var peticionConfig = {
+                url: null,
+                params: null,
+                timeout: null
+            };
+            peticionConfig = $.extend({}, peticionConfig, config);
 
-        return $.ajax({
-            method: 'PUT',
-            url: peticionConfig.url,
-            params: peticionConfig.params
-        });
-    }
+            return $.ajax({
+                method: 'PUT',
+                url: peticionConfig.url,
+                params: peticionConfig.params
+            });
+        }
+    }, {
+        key: 'del',
+        value: function del(config) {
+            var peticionConfig = {
+                url: null,
+                params: null,
+                timeout: null
+            };
+            peticionConfig = $.extend({}, peticionConfig, config);
 
-    function del(config) {
-        var peticionConfig = {
-            url: null,
-            params: null,
-            timeout: null
-        };
-        peticionConfig = $.extend({}, peticionConfig, config);
+            return $.ajax({
+                method: 'DELETE',
+                url: peticionConfig.url,
+                params: peticionConfig.params
+            });
+        }
+    }]);
 
-        return $.ajax({
-            method: 'DELETE',
-            url: peticionConfig.url,
-            params: peticionConfig.params
-        });
-    }
-};
+    return AjaxRequest;
+})();
 
 exports.AjaxRequest = AjaxRequest;
 
@@ -744,7 +755,7 @@ typeof global === "object" ? global : typeof window === "object" ? window : type
 /* jshint ignore:start */
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":6}],4:[function(require,module,exports){
+},{"_process":7}],4:[function(require,module,exports){
 /*exported TranslateAPI */
 /*global AjaxRequest */
 
@@ -754,32 +765,47 @@ Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _ajaxRequest = require('./ajaxRequest');
 
-var TranslateAPI = function TranslateAPI() {
-    _classCallCheck(this, TranslateAPI);
+var TranslateAPI = (function (_AjaxRequest) {
+    _inherits(TranslateAPI, _AjaxRequest);
 
-    var req = new _ajaxRequest.AjaxRequest();
+    function TranslateAPI() {
+        _classCallCheck(this, TranslateAPI);
 
-    this.getItems = getItems;
-    this.getItem = getItem;
-    this.sendToTranslate = sendToTranslate;
-
-    function getItems(obj) {
-        return req.get(obj);
+        _get(Object.getPrototypeOf(TranslateAPI.prototype), 'constructor', this).call(this);
     }
 
-    function getItem(id) {
-        /// params?
-        return req.get({ id: id });
-    }
+    _createClass(TranslateAPI, [{
+        key: 'getItems',
+        value: function getItems(obj) {
+            return _get(Object.getPrototypeOf(TranslateAPI.prototype), 'get', this).call(this, obj);
+        }
+    }, {
+        key: 'getItem',
+        value: function getItem(id) {
+            /// params?
+            return _get(Object.getPrototypeOf(TranslateAPI.prototype), 'get', this).call(this, {
+                id: id
+            });
+        }
+    }, {
+        key: 'sendToTranslate',
+        value: function sendToTranslate(obj) {
+            return _get(Object.getPrototypeOf(TranslateAPI.prototype), 'post', this).call(this, obj);
+        }
+    }]);
 
-    function sendToTranslate(obj) {
-        return req.post(obj);
-    }
-};
+    return TranslateAPI;
+})(_ajaxRequest.AjaxRequest);
 
 exports.TranslateAPI = TranslateAPI;
 
@@ -803,6 +829,43 @@ function odd(num) {
 }
 
 },{}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var WorkflowApp = (function () {
+    function WorkflowApp(elem) {
+        _classCallCheck(this, WorkflowApp);
+
+        console.log('WorkflowApp', elem);
+        this.elem = elem;
+    }
+
+    _createClass(WorkflowApp, [{
+        key: 'init',
+        value: function init() {
+            console.log('init');
+            //this.config();
+        }
+    }, {
+        key: 'config',
+        value: function config() {
+            console.log('sq');
+        }
+    }]);
+
+    return WorkflowApp;
+})();
+
+exports.WorkflowApp = WorkflowApp;
+
+},{}],7:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};

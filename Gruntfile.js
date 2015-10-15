@@ -43,7 +43,7 @@ module.exports = function(grunt) {
             },
             browserify: {
                 files: ['<%= config.app %>/scripts/{,*/}*.js', '!<%= config.app %>/scripts/main/main.js'],
-                tasks: ['clean:dev', 'browserify','browserSync:livereload']
+                tasks: ['clean:dev', 'browserify']
             },
             babelTest: {
                 files: ['test/spec/{,*/}*.js'],

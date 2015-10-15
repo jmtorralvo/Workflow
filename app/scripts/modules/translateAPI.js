@@ -3,29 +3,28 @@
 
 'use strict';
 
-import {AjaxRequest} from './ajaxRequest';
+import {
+    AjaxRequest
+}
+from './ajaxRequest';
 
 
-export class TranslateAPI {  
+export class TranslateAPI extends AjaxRequest {
     constructor() {
-        const req = new AjaxRequest();
-
-        this.getItems = getItems; 
-        this.getItem = getItem; 
-        this.sendToTranslate = sendToTranslate;
-
-       
-        function getItems(obj) {
-            return req.get(obj);
-        }
-
-        function getItem(id){
-        	/// params?
-        	return req.get({id:id});
-        }
-
-        function sendToTranslate(obj) {
-            return req.post(obj);
-        }
+        super();
     }
-} 
+    getItems(obj) {
+        return super.get(obj);
+    }
+
+    getItem(id) {
+        /// params?
+        return super.get({
+            id: id
+        });
+    }
+
+    sendToTranslate(obj) {
+        return super.post(obj);
+    }
+}

@@ -1,71 +1,71 @@
 'use strict';
 
 export class AjaxRequest {
-    constructor() { 
-        console.log('ajaxReq'); 
-        this.get = get;
+    constructor() {
+        console.log('ajaxReq');
+        /*this.getF = getF;
         this.post = post; 
         this.put = put;
-        this.del = del;  
+        this.del = del;  */
+    }
 
-        function get(config) {  
-            console.log('get', config);
+    get(config) {
+        console.log('get', config);
 
-            let peticionConfig = {
-                url: null, 
-                params: null,
-                timeout: null
-            };
-            peticionConfig = $.extend({},peticionConfig, config);
-            return $.ajax({
-                method: 'GET',
-                url: peticionConfig.url
-            });
-        }
+        let peticionConfig = {
+            url: null,
+            params: null,
+            timeout: null
+        };
+        peticionConfig = $.extend({}, peticionConfig, config);
+        return $.ajax({
+            method: 'GET',
+            url: peticionConfig.url
+        });
+    }
 
-        function post(config) {
-            let peticionConfig = {
-                url: null,
-                params: null,
-                timeout: null
-            };
-            peticionConfig = $.extend({},peticionConfig, config);
+    post(config) {
+        let peticionConfig = {
+            url: null,
+            params: null,
+            timeout: null
+        };
+        peticionConfig = $.extend({}, peticionConfig, config);
 
-            return $.ajax({
-                method: 'POST',
-                url: peticionConfig.url,
-                params: peticionConfig.params
-            });
-        }
+        return $.ajax({
+            method: 'POST',
+            url: peticionConfig.url,
+            params: peticionConfig.params
+        });
+    }
 
-        function put(config) {
-            let peticionConfig = {
-                url: null,
-                params: null,
-                timeout: null
-            };
-            peticionConfig = $.extend({},peticionConfig, config);
+    put(config) {
+        let peticionConfig = {
+            url: null,
+            params: null,
+            timeout: null
+        };
+        peticionConfig = $.extend({}, peticionConfig, config);
 
-            return $.ajax({
-                method: 'PUT',
-                url: peticionConfig.url,
-                params: peticionConfig.params  
-            });
-        }
+        return $.ajax({
+            method: 'PUT',
+            url: peticionConfig.url,
+            params: peticionConfig.params
+        });
+    }
 
-        function del(config) {
-            let peticionConfig = {
-                url: null,
-                params: null, 
-                timeout: null
-            };
-            peticionConfig = $.extend({},peticionConfig, config);
+    del(config) {
+        let peticionConfig = {
+            url: null,
+            params: null,
+            timeout: null
+        };
+        peticionConfig = $.extend({}, peticionConfig, config);
 
-            return $.ajax({
-                method: 'DELETE',
-                url: peticionConfig.url,
-                params: peticionConfig.params
-            });
-        }
+        return $.ajax({
+            method: 'DELETE',
+            url: peticionConfig.url,
+            params: peticionConfig.params
+        });
     }
 }

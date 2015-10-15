@@ -4,12 +4,9 @@ import * as runtime from './modules/runtime';
 import * as utils from './modules/utils';
 /// Classes
 import {AjaxRequest} from './modules/ajaxRequest';
-import {TranslateAPI} from './modules/translateAPI';
+import {TranslateAPI, ColorPoint} from './modules/translateAPI';
+import {WorkflowApp} from './modules/workflowApp';
 
 
 
-
-new AjaxRequest();
-new TranslateAPI();
-
-console.log(utils);
+var app = new WorkflowApp($('#section-view'));
