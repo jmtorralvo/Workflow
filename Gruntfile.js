@@ -41,9 +41,9 @@ module.exports = function(grunt) {
                 files: ['bower.json'],
                 tasks: ['wiredep']
             },
-            babel: {
+            browserify: {
                 files: ['<%= config.app %>/scripts/{,*/}*.js', '!<%= config.app %>/scripts/main/main.js'],
-                tasks: ['clean:dev', 'babel:dist', 'concat:main', 'file_append', 'jshint']
+                tasks: ['clean:dev', 'browserify','browserSync:livereload']
             },
             babelTest: {
                 files: ['test/spec/{,*/}*.js'],
@@ -58,7 +58,23 @@ module.exports = function(grunt) {
             },
             styles: {
                 files: ['<%= config.app %>/styles/{,*/}*.css'],
-                tasks: ['newer:copy:styles', 'postcss']
+                tasks: ['postcss']
+            }
+        },
+
+        browserify: {
+            dist: {
+                options: {
+                    transform: [
+                        ['babelify', {
+                            'stage': 0
+                        }]
+                    ]
+                },
+                files: {
+                    '<%= config.app %>/scripts/bundle.js': '<%= config.app %>/scripts/main.js',
+                    '<%= config.dist %>/scripts/bundle.js': '<%= config.app %>/scripts/main.js'
+                }
             }
         },
 
@@ -149,20 +165,12 @@ module.exports = function(grunt) {
             all: {
                 src: [
                     'Gruntfile.js',
-                    '<%= config.app %>/scripts/**/*.js'
+                    '<%= config.app %>/scripts/**/*.js',
+                    '!<%= config.app %>/scripts/bundle.js'
                 ]
             }
         },
 
-        // Mocha testing framework configuration options
-        mocha: {
-            all: {
-                options: {
-                    run: true,
-                    urls: ['http://<%= browserSync.test.options.host %>:<%= browserSync.test.options.port %>/index.html']
-                }
-            }
-        },
         karma: {
             unit: {
                 configFile: 'karma.conf.js',
@@ -231,7 +239,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: '.tmp/styles/',
                     src: '{,*/}*.css',
-                    dest: '.tmp/styles/'
+                    dest: '<%= config.app %>/styles/'
                 }]
             }
         },
@@ -360,8 +368,7 @@ module.exports = function(grunt) {
         concat: {
             main: {
                 files: [{
-                    '<%= config.app %>/scripts/main/main.js': ['.tmp/scripts/modules/*.js', 
-                        '.tmp/scripts/site/*.js',
+                    '<%= config.app %>/scripts/main/main.js': ['.tmp/scripts/modules/*.js',
                         '.tmp/scripts/main/*.js'
                     ]
                 }]
@@ -423,14 +430,14 @@ module.exports = function(grunt) {
         // Run some tasks in parallel to speed up build process
         concurrent: {
             server: [
-                'babel:dist',
+                'browserify',
                 'less:server'
             ],
             test: [
-                'babel'
+                'browserify'
             ],
             dist: [
-                'babel',
+                'browserify',
                 'less',
                 'imagemin',
                 'svgmin'
@@ -448,10 +455,11 @@ module.exports = function(grunt) {
         grunt.task.run([
             'clean:server',
             'wiredep',
+            'browserify',
             'concurrent:server',
             'postcss',
-            'browserSync:livereload',
             'jshint',
+            'browserSync:livereload',
             'watch'
         ]);
     });
@@ -479,21 +487,19 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'clean:dev',
-        'babel:dist',
-        'wiredep',
+        'browserify',
         'useminPrepare',
         'concurrent:dist',
         'postcss',
         'concat',
-        'file_append',
         'cssmin',
         'uglify',
         'copy:dist',
         'modernizr',
         'filerev',
         'usemin',
-        'jshint',
-        'htmlmin'
+        'htmlmin',
+        'jshint'
     ]);
 
     grunt.registerTask('default', [

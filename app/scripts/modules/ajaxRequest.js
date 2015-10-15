@@ -1,12 +1,12 @@
-/*exported AjaxRequest */
+'use strict';
 
-class AjaxRequest {
-    constructor() {
-        //console.log('ajaxReq');
+export class AjaxRequest {
+    constructor() { 
+        console.log('ajaxReq'); 
         this.get = get;
-        this.post = post;
+        this.post = post; 
         this.put = put;
-        this.del = del; 
+        this.del = del;  
 
         function get(config) {  
             console.log('get', config);

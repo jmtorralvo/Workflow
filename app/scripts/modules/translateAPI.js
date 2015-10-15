@@ -1,7 +1,12 @@
 /*exported TranslateAPI */
 /*global AjaxRequest */
 
-class TranslateAPI {
+'use strict';
+
+import {AjaxRequest} from './ajaxRequest';
+
+
+export class TranslateAPI {  
     constructor() {
         const req = new AjaxRequest();
 

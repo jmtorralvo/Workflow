@@ -1,5 +1,7 @@
-// Generated on 2015-10-05 using
+// Generated on 2015-10-07 using
 // generator-webapp 1.0.1
+/*jshint camelcase: false */
+
 'use strict';
 
 var LIVERELOAD_PORT = 9000;
@@ -41,7 +43,7 @@ module.exports = function(grunt) {
             },
             babel: {
                 files: ['<%= config.app %>/scripts/{,*/}*.js', '!<%= config.app %>/scripts/main/main.js'],
-                tasks: ['clean:dev', 'babel:dist', 'concat:main']
+                tasks: ['clean:dev', 'babel:dist', 'concat:main', 'file_append']
             },
             babelTest: {
                 files: ['test/spec/{,*/}*.js'],
@@ -50,9 +52,9 @@ module.exports = function(grunt) {
             gruntfile: {
                 files: ['Gruntfile.js']
             },
-            sass: {
-                files: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
-                tasks: ['sass:server', 'postcss']
+            less: {
+                files: ['<%= config.app %>/styles/**/*.less'],
+                tasks: ['less:server', 'postcss']
             },
             styles: {
                 files: ['<%= config.app %>/styles/{,*/}*.css'],
@@ -138,13 +140,27 @@ module.exports = function(grunt) {
             ]
         },
 
-        // Mocha testing framework configuration options
-        mocha: {
+        // Make sure code styles are up to par and there are no obvious mistakes
+        jshint: {
+            options: {
+                jshintrc: '.jshintrc',
+                reporter: require('jshint-stylish')
+            },
             all: {
-                options: {
-                    run: true,
-                    urls: ['http://<%= browserSync.test.options.host %>:<%= browserSync.test.options.port %>/index.html']
-                }
+                src: [
+                    'Gruntfile.js',
+                    '<%= config.app %>/scripts/**/*.js'
+                ]
+            }
+        },
+
+        karma: {
+            unit: {
+                configFile: 'karma.conf.js',
+                background: false
+            },
+            e2e_auto: {
+                configFile: 'test/karmaSpec/karma-e2e.conf.js'
             }
         },
 
@@ -173,28 +189,18 @@ module.exports = function(grunt) {
             }
         },
 
-        // Compiles Sass to CSS and generates necessary files if requested
-        sass: {
+        less: {
             options: {
                 sourceMap: true,
                 sourceMapEmbed: true,
                 sourceMapContents: true,
                 includePaths: ['.']
             },
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= config.app %>/styles',
-                    src: ['*.{scss,sass}'],
-                    dest: '.tmp/styles',
-                    ext: '.css'
-                }]
-            },
             server: {
                 files: [{
                     expand: true,
                     cwd: '<%= config.app %>/styles',
-                    src: ['*.{scss,sass}'],
+                    src: ['*.less'],
                     dest: '.tmp/styles',
                     ext: '.css'
                 }]
@@ -228,8 +234,8 @@ module.exports = function(grunt) {
                 exclude: ['bootstrap.js'],
                 ignorePath: /^(\.\.\/)*\.\./
             },
-            sass: {
-                src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
+            less: {
+                src: ['<%= config.app %>/styles/{,*/}*.{less}'],
                 ignorePath: /^(\.\.\/)+/
             }
         },
@@ -316,17 +322,6 @@ module.exports = function(grunt) {
             }
         },
 
-        concat: {
-            main: {
-                files: [{
-                    '<%= config.app %>/scripts/main/main.js': ['.tmp/scripts/modules/*.js',
-                        '.tmp/scripts/site/*.js',
-                        '.tmp/scripts/main/*.js'
-                    ]
-                }]
-            }
-        },
-
         // By default, your `index.html`'s <!-- Usemin block --> will take care
         // of minification. These next options are pre-configured if you do not
         // wish to use the Usemin blocks.
@@ -343,8 +338,8 @@ module.exports = function(grunt) {
         // uglify: {
         //   dist: {
         //     files: {
-        //       '<%= config.dist %>/scripts/main/main.js': [
-        //         '<%= config.app %>/scripts/main/main.js'
+        //       '<%= config.dist %>/scripts/scripts.js': [
+        //         '<%= config.dist %>/scripts/scripts.js'
         //       ]
         //     }
         //   }
@@ -352,6 +347,27 @@ module.exports = function(grunt) {
         // concat: {
         //   dist: {}
         // },
+
+        concat: {
+            main: {
+                files: [{
+                    '<%= config.app %>/scripts/main/main.js': ['.tmp/scripts/modules/*.js', 
+                        '.tmp/scripts/main/*.js'
+                    ]
+                }]
+            }
+        },
+
+        file_append: {
+            default_options: {
+                files: [{
+                    prepend: '/* jshint ignore:start */',
+                    input: '<%= config.app %>/scripts/main/main.js',
+                    output: '<%= config.app %>/scripts/main/main.js'
+                }]
+            }
+        },
+
 
         // Copies remaining files to places other tasks can use
         copy: {
@@ -398,14 +414,14 @@ module.exports = function(grunt) {
         concurrent: {
             server: [
                 'babel:dist',
-                'sass:server'
+                'less:server'
             ],
             test: [
                 'babel'
             ],
             dist: [
                 'babel',
-                'sass',
+                'less',
                 'imagemin',
                 'svgmin'
             ]
@@ -420,13 +436,12 @@ module.exports = function(grunt) {
         }
 
         grunt.task.run([
-            'clean:dev',
-            'babel:dist',
-            'concat:main',
+            'clean:server',
             'wiredep',
             'concurrent:server',
             'postcss',
             'browserSync:livereload',
+            'jshint',
             'watch'
         ]);
     });
@@ -439,7 +454,7 @@ module.exports = function(grunt) {
     grunt.registerTask('test', function(target) {
         if (target !== 'watch') {
             grunt.task.run([
-                'clean:dev',
+                'clean:server',
                 'concurrent:test',
                 'postcss'
             ]);
@@ -447,23 +462,27 @@ module.exports = function(grunt) {
 
         grunt.task.run([
             'browserSync:test',
-            'mocha'
+            'karma'
         ]);
     });
 
     grunt.registerTask('build', [
         'clean:dist',
+        'clean:dev',
+        'babel:dist',
         'wiredep',
         'useminPrepare',
         'concurrent:dist',
         'postcss',
-        'concat:main',
+        'concat',
+        'file_append',
         'cssmin',
         'uglify',
         'copy:dist',
         'modernizr',
         'filerev',
         'usemin',
+        'jshint',
         'htmlmin'
     ]);
 

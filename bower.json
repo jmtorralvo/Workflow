@@ -2,9 +2,10 @@
   "name": "workflow-grunt",
   "private": true,
   "dependencies": {
-    "bootstrap-sass": "~3.3.5",
     "modernizr": "~2.8.3",
-    "requirejs": "~2.1.20"
+    "requirejs": "~2.1.20",
+    "bootstrap-less": "~3.3.4",
+    "jquery": "~2.1.4"
   },
   "overrides": {
     "bootstrap-sass": {
@@ -16,7 +17,9 @@
     }
   },
   "devDependencies": {
-    "chai": "~3.3.0",
-    "mocha": "~2.3.3"
+    "modernizr": "~2.8.3",
+    "requirejs": "~2.1.20",
+    "bootstrap-less": "~3.3.4",
+    "jquery": "~2.1.4"
   }
 }
