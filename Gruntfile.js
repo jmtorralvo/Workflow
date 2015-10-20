@@ -43,7 +43,10 @@ module.exports = function(grunt) {
             },
             browserify: {
                 files: ['<%= config.app %>/scripts/{,*/}*.js', '!<%= config.app %>/scripts/main/main.js'],
-                tasks: ['clean:dev', 'browserify']
+                tasks: ['clean:dev', 'browserify'],
+                options: {
+                    reload: true
+                }
             },
             babelTest: {
                 files: ['test/spec/{,*/}*.js'],
@@ -54,11 +57,17 @@ module.exports = function(grunt) {
             },
             less: {
                 files: ['<%= config.app %>/styles/**/*.less'],
-                tasks: ['less:server', 'postcss']
+                tasks: ['less:server', 'postcss'],
+                options: {
+                    reload: true
+                }
             },
             styles: {
                 files: ['<%= config.app %>/styles/{,*/}*.css'],
-                tasks: ['postcss']
+                tasks: ['postcss'],
+                options: {
+                    reload: true
+                }
             }
         },
 
@@ -375,16 +384,6 @@ module.exports = function(grunt) {
             }
         },
 
-        file_append: {
-            default_options: {
-                files: [{
-                    prepend: '/* jshint ignore:start */',
-                    input: '<%= config.app %>/scripts/main/main.js',
-                    output: '<%= config.app %>/scripts/main/main.js'
-                }]
-            }
-        },
-
 
         // Copies remaining files to places other tasks can use
         copy: {
@@ -398,13 +397,14 @@ module.exports = function(grunt) {
                         '*.{ico,png,txt}',
                         'images/{,*/}*.webp',
                         '{,*/}*.html',
-                        'styles/fonts/{,*/}*.*'
+                        'styles/fonts/{,*/}*.*',
+                        'scripts/lib/*.js'
                     ]
                 }, {
                     expand: true,
                     dot: true,
                     cwd: '.',
-                    src: 'bower_components/bootstrap-sass/assets/fonts/bootstrap/*',
+                    src: 'bower_components/bootstrap-less/fonts/bootstrap/*',
                     dest: '<%= config.dist %>'
                 }]
             }

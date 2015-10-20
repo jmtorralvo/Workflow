@@ -1,6 +1,7 @@
-/*exported runtime, utils, TranslateAPI */
+/*exported runtime, utils, TranslateAPI, DataBind */
 
-import * as runtime from './modules/runtime';
+'use strict';
+
 import * as utils from './modules/utils';
 /// Classes
 import {TranslateAPI} from './modules/translateAPI';
@@ -11,6 +12,5 @@ var app = new WorkflowApp($('#section-view'), $('#workflow-navbar'));
 app.config();
 
 
-var myModel = {};
-
-DataBind.bind($('#section-view'), myModel);
+/*var myModel = {};
+DataBind.bind($('#section-view'), myModel);*/

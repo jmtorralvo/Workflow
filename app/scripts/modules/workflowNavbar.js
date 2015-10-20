@@ -1,9 +1,14 @@
+'use strict';
+
 export class WorkflowNavbar {
     constructor(elem) {
-       console.log(elem);
-    }
 
-    init() {
-       
+        this.elem = elem;
+        
+        $(elem).find('li').on('click', (ev) => {
+        	//console.log('ev - navbar', ev);
+        	$(ev.currentTarget).trigger('CHANGE_SEC');
+        });
+        
     }
 }

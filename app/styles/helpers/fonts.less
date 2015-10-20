@@ -1,0 +1,143 @@
+// Family Open Sans
+// http://www.fontsquirrel.com/fonts/PT-Sans
+
+
+/* Importamos fuentes */
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('fonts/@{icon-font-name}.eot');
+  src: url('fonts/@{icon-font-name}.eot?#iefix') format('embedded-opentype'),
+       url('fonts/@{icon-font-name}.woff2') format('woff2'),
+       url('fonts/@{icon-font-name}.woff') format('woff'),
+       url('fonts/@{icon-font-name}.ttf') format('truetype'),
+       url('fonts/@{icon-font-name}.svg#@{icon-font-svg-id}') format('svg');
+}
+
+
+@font-face {
+    font-family: 'Repsol Regular';
+    src: url('fonts/RepsolRegular.eot');
+    src: url('fonts/RepsolRegular.eot?#iefix') format('embedded-opentype'),
+         url('fonts/RepsolRegular.svg#RepsolRegular') format('svg'),
+         url('fonts/RepsolRegular.woff') format('woff'),
+         url('fonts/RepsolRegular.ttf') format('truetype');
+
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+}
+
+@font-face {
+    font-family: 'Repsol Light';
+    src: url('fonts/RepsolLight.eot');
+    src: url('fonts/RepsolLight.eot?#iefix') format('embedded-opentype'),
+         url('fonts/RepsolLight.svg#RepsolLight') format('svg'),
+         url('fonts/RepsolLight.woff') format('woff'),
+         url('fonts/RepsolLight.ttf') format('truetype');
+
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+}
+
+@font-face {
+    font-family: 'Repsol Bold';
+    src: url('fonts/RepsolBold.eot');
+    src: url('fonts/RepsolBold.eot?#iefix') format('embedded-opentype'),
+         url('fonts/RepsolBold.svg#RepsolBold') format('svg'),
+         url('fonts/RepsolBold.woff') format('woff'),
+         url('fonts/RepsolBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+}
+
+@font-face {
+    font-family: 'Repsol Stencil Bold';
+    src: url('fonts/RepsolStencilBold.eot');
+    src: url('fonts/RepsolStencilBold.eot?#iefix') format('embedded-opentype'),
+         url('fonts/RepsolStencilBold.svg#RepsolStencilBold') format('svg'),
+         url('fonts/RepsolStencilBold.woff') format('woff'),
+         url('fonts/RepsolStencilBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+}
+
+@font-face {
+    font-family: 'Repsol Outline Bold';
+    src: url('fonts/RepsolOutlineBold.eot');
+    src: url('fonts/RepsolOutlineBold.eot?#iefix') format('embedded-opentype'),
+         url('fonts/RepsolOutlineBold.svg#RepsolOutlineBold') format('svg'),
+         url('fonts/RepsolOutlineBold.woff') format('woff'),
+         url('fonts/RepsolOutlineBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+}
+
+@font-face {
+    font-family: 'PTSans Regular';
+    src: url('fonts/PTSansRegular.eot');
+    src: url('fonts/PTSansRegular.eot?#iefix') format('embedded-opentype'),
+         url('fonts/PTSansRegular.svg#PTSansRegular') format('svg'),
+         url('fonts/PTSansRegular.woff') format('woff'),
+         url('fonts/PTSansRegular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+}
+
+@font-face {
+    font-family: 'PTSans Bold';
+    src: url('fonts/PTSansBold.eot');
+    src: url('fonts/PTSansBold.eot?#iefix') format('embedded-opentype'),
+         url('fonts/PTSansBold.svg#PTSansBold') format('svg'),
+         url('fonts/PTSansBold.woff') format('woff'),
+         url('fonts/PTSansBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+}
+
+@font-face {
+  font-family: "repsol-font-3";
+  src:url("fonts/repsol-font-3.eot");
+  src:url("fonts/repsol-font-3.eot?#iefix") format("embedded-opentype"),
+    url("fonts/repsol-font-3.ttf") format("truetype"),
+    url("fonts/repsol-font-3.svg#repsol-font-3") format("svg"),
+    url("fonts/repsol-font-3.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
+
+}
+
+@font-face {
+  font-family: "repsol-font-4";
+  src:url("fonts/repsol-font-4.eot");
+  src:url("fonts/repsol-font-4.eot?#iefix") format("embedded-opentype"),
+    url("fonts/repsol-font-4.ttf") format("truetype"),
+    url("fonts/repsol-font-4.svg#repsol-font-4") format("svg"),
+    url("fonts/repsol-font-4.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "repsol-font-4";
+  content: attr(data-icon);
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none !important;
+  speak: none;
+  display: inline-block;
+  text-decoration: none;
+  width: 1em;
+  line-height: 1em;
+  -webkit-font-smoothing: antialiased;
+}
