@@ -4,19 +4,39 @@ body {
 }
 
 #workflow-wrapper {
-    border: 2px solid @verdeRepsol;
     .navbar {
+        .btn-nav{
+            padding: 5px 8px 5px 8px;
+            //.transition( padding .4s ease);
+            .cupper-btn-nav{
+                display: block; 
+            }
+        }
+        .btn-nav:hover{
+           
+        }
+        .btn-nav.first-btn-nav:before{
+            content: '';
+            border:none;
+        }
+        .btn-nav:before{
+            content: '';
+            width: 1px;
+            height: 30px;
+            border-left: 1px solid @turquesaRepsolGuia;
+            float: left;
+            display: block;
+            position: absolute;
+            top:15px;
+        }
         #logo-repsol {
             background-color: @rojoRepsol;
             width: 150px;
-            height: 50px;
+            height: 60px;
             float: left;
         }
         #user-nav-info {
             float: right;
-        }
-        &:before {
-
         }
     }
 }

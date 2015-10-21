@@ -3,7 +3,7 @@
 'use strict';
 
 import {WorkflowNavbar} from './workflowNavbar';
-import * as pages from '../pages/pages'
+import * as pages from '../pages/pages';
 
 
 export class WorkflowApp {
@@ -32,10 +32,14 @@ export class WorkflowApp {
     changeState(newState) {
         let self = this;
         this.state = newState;
+        /*jshint unused:false*/
         this.elem.load('sections/' + newState + '.html', function(tmpl, status) {
-            self.currentSec = null;
-            self.instanceSec(newState);
-        })
+            if (status === 'success'){
+                self.currentSec = null;
+                self.instanceSec(newState);
+            }    
+        });
+        /*jshint unused:true*/
     }
 
     instanceSec(newState){

@@ -42,7 +42,7 @@ module.exports = function(grunt) {
                 tasks: ['wiredep']
             },
             browserify: {
-                files: ['<%= config.app %>/scripts/{,*/}*.js', '!<%= config.app %>/scripts/main/main.js'],
+                files: ['<%= config.app %>/scripts/{,*/}*.js', '!<%= config.app %>/scripts/bundle.js'],
                 tasks: ['clean:dev', 'browserify'],
                 options: {
                     reload: true
@@ -58,13 +58,6 @@ module.exports = function(grunt) {
             less: {
                 files: ['<%= config.app %>/styles/**/*.less'],
                 tasks: ['less:server', 'postcss'],
-                options: {
-                    reload: true
-                }
-            },
-            styles: {
-                files: ['<%= config.app %>/styles/{,*/}*.css'],
-                tasks: ['postcss'],
                 options: {
                     reload: true
                 }

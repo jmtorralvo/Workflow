@@ -239,10 +239,14 @@ var WorkflowApp = (function () {
         value: function changeState(newState) {
             var self = this;
             this.state = newState;
+            /*jshint unused:false*/
             this.elem.load('sections/' + newState + '.html', function (tmpl, status) {
-                self.currentSec = null;
-                self.instanceSec(newState);
+                if (status === 'success') {
+                    self.currentSec = null;
+                    self.instanceSec(newState);
+                }
             });
+            /*jshint unused:true*/
         }
     }, {
         key: 'instanceSec',
@@ -297,6 +301,8 @@ var WorkflowNavbar = function WorkflowNavbar(elem) {
 exports.WorkflowNavbar = WorkflowNavbar;
 
 },{}],7:[function(require,module,exports){
+
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -317,9 +323,9 @@ var HistoricalPage = function HistoricalPage(container) {
 
         var a = document.createElement('a');
         //getting data from our div that contains the HTML table
-        var data_type = 'data:application/vnd.ms-excel';
-        var table_html = this.container[0].outerHTML.replace(/ /g, '%20');
-        a.href = data_type + ', ' + table_html;
+        var dataType = 'data:application/vnd.ms-excel';
+        var tableHtml = this.container[0].outerHTML.replace(/ /g, '%20');
+        a.href = dataType + ', ' + tableHtml;
         //setting the file name
         a.download = 'historical' + '.xls';
         //triggering the function
@@ -327,14 +333,17 @@ var HistoricalPage = function HistoricalPage(container) {
         //just in case, prevent default behaviour
         e.preventDefault();
     });
-};
+}
+
+/*jshint unused:false*/
+;
 
 exports.HistoricalPage = HistoricalPage;
 
 var ConfigEnterprises = function ConfigEnterprises(container) {
     _classCallCheck(this, ConfigEnterprises);
 
-    alert('config instanciado');
+    console.log('config instanciado');
 };
 
 exports.ConfigEnterprises = ConfigEnterprises;
@@ -342,7 +351,7 @@ exports.ConfigEnterprises = ConfigEnterprises;
 var TaskList = function TaskList(container) {
     _classCallCheck(this, TaskList);
 
-    alert('TaskList instanciado');
+    console.log('TaskList instanciado');
 };
 
 exports.TaskList = TaskList;
@@ -351,13 +360,15 @@ var SelectLanguages = (function () {
     function SelectLanguages(container) {
         _classCallCheck(this, SelectLanguages);
 
-        alert('SelectLanguages instanciado');
+        console.log('SelectLanguages instanciado');
     }
+
+    /*jshint unused:true*/
 
     _createClass(SelectLanguages, [{
         key: 'foo',
         value: function foo() {
-            alert('foo');
+            console.log('foo');
         }
     }]);
 

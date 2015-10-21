@@ -1,3 +1,5 @@
+
+
 'use strict';
 
 export class HistoricalPage {
@@ -10,9 +12,9 @@ export class HistoricalPage {
         	
             var a = document.createElement('a');
             //getting data from our div that contains the HTML table
-            var data_type = 'data:application/vnd.ms-excel';
-            var table_html = this.container[0].outerHTML.replace(/ /g, '%20');
-            a.href = data_type + ', ' + table_html;
+            var dataType = 'data:application/vnd.ms-excel';
+            var tableHtml = this.container[0].outerHTML.replace(/ /g, '%20');
+            a.href = dataType + ', ' + tableHtml;
             //setting the file name
             a.download = 'historical' + '.xls';
             //triggering the function
@@ -23,10 +25,11 @@ export class HistoricalPage {
     }
 }
 
+/*jshint unused:false*/
 export class ConfigEnterprises {
     constructor(container) {
 
-        alert('config instanciado');
+        console.log('config instanciado');
     }
 }
 
@@ -34,7 +37,7 @@ export class ConfigEnterprises {
 export class TaskList {
     constructor(container) {
 
-        alert('TaskList instanciado');
+        console.log('TaskList instanciado');
     }
 }
 
@@ -42,11 +45,12 @@ export class TaskList {
 export class SelectLanguages {
     constructor(container) {
 
-        alert('SelectLanguages instanciado');
+        console.log('SelectLanguages instanciado');
     }
 
     foo(){
-        alert('foo');
+        console.log('foo');
     }
 }
 
+/*jshint unused:true*/
