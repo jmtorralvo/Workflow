@@ -14,7 +14,7 @@ export class HistoricalPage {
             var tableHtml = this.container[0].outerHTML.replace(/ /g, '%20');
             a.href = dataType + ', ' + tableHtml;
             //setting the file name
-            a.download = 'historical' + '.xls';
+            a.download = 'historical' + '.xls'; 
             //triggering the function
             a.click();
             //just in case, prevent default behaviour

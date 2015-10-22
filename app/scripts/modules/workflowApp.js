@@ -17,7 +17,7 @@ export class WorkflowApp {
 
         navbar.on('CHANGE_SEC', (ev) => {
             let dest = ($(ev.target).find('a').attr('href')).replace('#', '');
-            this.changeState(dest); 
+            this.changeState(dest);  
         });
     }
 

@@ -43,7 +43,7 @@ module.exports = function(grunt) {
             },
             browserify: {
                 files: ['<%= config.app %>/scripts/{,*/}*.js', '!<%= config.app %>/scripts/bundle.js'],
-                tasks: ['clean:dev', 'browserify'],
+                tasks: ['clean:dev', 'newer:browserify'],
                 options: {
                     reload: true
                 }
@@ -57,7 +57,7 @@ module.exports = function(grunt) {
             },
             less: {
                 files: ['<%= config.app %>/styles/**/*.less'],
-                tasks: ['less:server', 'postcss'],
+                tasks: ['newer:less:server', 'newer:postcss'],
                 options: {
                     reload: true
                 }

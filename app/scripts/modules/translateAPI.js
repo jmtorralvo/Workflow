@@ -9,7 +9,7 @@ from './ajaxRequest';
 
 
 export class TranslateAPI extends AjaxRequest {
-    constructor() {
+    constructor() { 
         super();
     }
     getItems(obj) {
