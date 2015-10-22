@@ -20,7 +20,8 @@
   "smarttabs": true,
   "globals": {
     "angular": false,
-    "$": false
+    "$": false,
+    "DataBind" : false
   }
 }
 

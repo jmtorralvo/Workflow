@@ -1,99 +1,76 @@
 <div id="wrap-select-idioma-empresa">
-    <div class="row">
+    <div class="row margin-bottom-lg">
         <p>
             <h1>Seleccionar idioma y empresa</h1></p>
-        <button>Agregar Idioma</button>
+        <button id="#add-lang-btn" data-toggle="modal" data-target="#addLangModal">Agregar Idioma</button>
     </div>
     <div class="row">
         <table class="table table-hover">
             <tr>
                 <td>
-                    <h2>Inglés</h2>
+                    <h2 data-key="relations[0].lang"></h2>
                 </td>
                 <td>
-                    <select class="provider-select">
-                        <option>Lingua S.A.</option>
-                        <option>Quesd</option>
-                        <option>WordBee</option>
+                    <select data-key="relations[0].prov" class="provider-select">
+                        <option value="lingua">Lingua S.A.</option>
+                        <option value="quest">Quest</option>
+                        <option value="wordBee">WordBee</option>
                     </select>
                 </td>
                 <td>
-                    <button>Eliminar Idioma</button>
+                    <delete-lang-btn data-ind=0></delete-lang-btn>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <h2>Francés</h2>
+                    <h2 data-key="relations[1].lang"></h2>
                 </td>
                 <td>
-                    <select class="provider-select">
-                        <option>Lingua S.A.</option>
-                        <option>Quesd</option>
-                        <option>WordBee</option>
+                    <select data-key="relations[1].prov" class="provider-select">
+                        <option value="lingua">Lingua S.A.</option>
+                        <option value="quest">Quest</option>
+                        <option value="wordBee">WordBee</option>
                     </select>
                 </td>
                 <td>
-                    <button>Eliminar Idioma</button>
+                     <delete-lang-btn data-ind=1></delete-lang-btn>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <h2>Portugués</h2>
+                    <h2 data-key="relations[2].lang"></h2>
                 </td>
                 <td>
-                    <select class="provider-select">
-                        <option>Lingua S.A.</option>
-                        <option>Quesd</option>
-                        <option>WordBee</option>
+                    <select data-key="relations[2].prov" class="provider-select">
+                        <option value="lingua">Lingua S.A.</option>
+                        <option value="quest">Quest</option>
+                        <option value="wordBee">WordBee</option>
                     </select>
                 </td>
                 <td>
-                    <button>Eliminar Idioma</button>
+                     <delete-lang-btn data-ind=2></delete-lang-btn>
                 </td>
             </tr>
         </table>
-        <!--  <div class="col-xs-5">
-            <h2>Ingles</h2>
-        </div>
-        <div class="col-xs-6">
-            <select class="provider-select">
-                <option>Lingua S.A.</option>
-                <option>Quesd</option>
-                <option>WordBee</option>
-            </select>
-        </div>
-        <div class="col-xs-1">
-        	<button>Eliminar Idioma</button>
-        </div>
     </div>
-    <div class="row">
-        <div class="col-xs-5">
-            <h2>Francés</h2>
-        </div>
-        <div class="col-xs-6">
-            <select class="provider-select">
-                <option>Lingua S.A.</option>
-                <option>Quesd</option>
-                <option>WordBee</option>
-            </select>
-        </div>
-         <div class="col-xs-1">
-        	<button>Eliminar Idioma</button>
-        </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="addLangModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button id="confirmAddLanguageBtn" type="button" class="btn btn-primary">Aceptar</button>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-xs-5">
-            <h2>Portugués</h2>
-        </div>
-        <div class="col-xs-6">
-            <select class="provider-select">
-                <option>Lingua S.A.</option>
-                <option>Quesd</option>
-                <option>WordBee</option>
-            </select>
-        </div>
-         <div class="col-xs-1">
-        	<button>Eliminar Idioma</button>
-        </div>-->
-    </div>
+  </div>
 </div>

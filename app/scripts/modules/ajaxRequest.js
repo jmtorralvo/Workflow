@@ -3,10 +3,6 @@
 export class AjaxRequest {
     constructor() {
         console.log('ajaxReq');
-        /*this.getF = getF;
-        this.post = post; 
-        this.put = put;
-        this.del = del;  */
     }
 
     get(config) {

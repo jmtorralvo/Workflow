@@ -21,7 +21,7 @@ app.config();
 /*var myModel = {};
 DataBind.bind($('#section-view'), myModel);*/
 
-},{"./modules/translateAPI":3,"./modules/utils":4,"./modules/workflowApp":5}],2:[function(require,module,exports){
+},{"./modules/translateAPI":3,"./modules/utils":4,"./modules/workflowApp":6}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -37,10 +37,6 @@ var AjaxRequest = (function () {
         _classCallCheck(this, AjaxRequest);
 
         console.log('ajaxReq');
-        /*this.getF = getF;
-        this.post = post; 
-        this.put = put;
-        this.del = del;  */
     }
 
     _createClass(AjaxRequest, [{
@@ -116,7 +112,6 @@ exports.AjaxRequest = AjaxRequest;
 
 },{}],3:[function(require,module,exports){
 /*exported TranslateAPI */
-/*global AjaxRequest */
 
 'use strict';
 
@@ -188,7 +183,72 @@ function odd(num) {
 }
 
 },{}],5:[function(require,module,exports){
-/*exported WorkflowNavbar */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var DeleteLangBtn = (function (_HTMLElement) {
+    _inherits(DeleteLangBtn, _HTMLElement);
+
+    function DeleteLangBtn() {
+        _classCallCheck(this, DeleteLangBtn);
+
+        _get(Object.getPrototypeOf(DeleteLangBtn.prototype), 'constructor', this).apply(this, arguments);
+    }
+
+    _createClass(DeleteLangBtn, [{
+        key: 'createdCallback',
+
+        // Fires when an instance of the element is created.
+        value: function createdCallback() {
+            var _this = this;
+
+            $(this).append('<button>Eliminar Idioma</button>');
+            //this.textContent = 'Eliminar Idioma';
+            $(this).on('click', function (ev) {
+                $(_this).trigger('DELETE_LANGUAGE');
+                ev.preventDefault();
+            });
+        }
+
+        // Fires when an instance was inserted into the document.
+    }, {
+        key: 'attachedCallback',
+        value: function attachedCallback() {}
+
+        // Fires when an instance was removed from the document.
+    }, {
+        key: 'detachedCallback',
+        value: function detachedCallback() {}
+
+        // Fires when an attribute was added, removed, or updated.
+        /*jshint unused:true*/
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback(attr, oldVal, newVal) {}
+
+        /*jshint unused:false*/
+    }]);
+
+    return DeleteLangBtn;
+})(HTMLElement);
+
+exports.DeleteLangBtn = DeleteLangBtn;
+
+document.registerElement('delete-lang-btn', DeleteLangBtn);
+
+},{}],6:[function(require,module,exports){
+/*exported WorkflowNavbar, webComponents */
 
 'use strict';
 
@@ -208,14 +268,17 @@ var _pagesPages = require('../pages/pages');
 
 var pages = _interopRequireWildcard(_pagesPages);
 
+var _webcomponentsRepsol = require('./webcomponents-repsol');
+
+var webComponents = _interopRequireWildcard(_webcomponentsRepsol);
+
 var WorkflowApp = (function () {
     function WorkflowApp(elem, navbar) {
         var _this = this;
 
         _classCallCheck(this, WorkflowApp);
 
-        var that = this;
-        that.elem = elem;
+        this.elem = elem;
         this.navbar = new _workflowNavbar.WorkflowNavbar(navbar);
         this.state = 'home';
         this.currentSec = 'empty';
@@ -260,7 +323,8 @@ var WorkflowApp = (function () {
             }
             if (newState === 'select-idioma-empresa') {
                 this.currentSec = new pages.SelectLanguages($('#section-view'));
-                //this.currentSec.foo();
+                //this.currentSec.deleteLang(1);
+                //pages.SelectLanguages.foo();
             }
             if (newState === 'task-list') {
                 this.currentSec = new pages.TaskList($('#section-view'));
@@ -278,7 +342,7 @@ var WorkflowApp = (function () {
 
 exports.WorkflowApp = WorkflowApp;
 
-},{"../pages/pages":7,"./workflowNavbar":6}],6:[function(require,module,exports){
+},{"../pages/pages":8,"./webcomponents-repsol":5,"./workflowNavbar":7}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -300,9 +364,7 @@ var WorkflowNavbar = function WorkflowNavbar(elem) {
 
 exports.WorkflowNavbar = WorkflowNavbar;
 
-},{}],7:[function(require,module,exports){
-
-
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -314,6 +376,8 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var HistoricalPage = function HistoricalPage(container) {
+    var _this = this;
+
     _classCallCheck(this, HistoricalPage);
 
     this.container = container;
@@ -324,7 +388,7 @@ var HistoricalPage = function HistoricalPage(container) {
         var a = document.createElement('a');
         //getting data from our div that contains the HTML table
         var dataType = 'data:application/vnd.ms-excel';
-        var tableHtml = this.container[0].outerHTML.replace(/ /g, '%20');
+        var tableHtml = _this.container[0].outerHTML.replace(/ /g, '%20');
         a.href = dataType + ', ' + tableHtml;
         //setting the file name
         a.download = 'historical' + '.xls';
@@ -358,14 +422,57 @@ exports.TaskList = TaskList;
 
 var SelectLanguages = (function () {
     function SelectLanguages(container) {
+        var _this2 = this;
+
         _classCallCheck(this, SelectLanguages);
 
+        //http://codepen.io/grnadav/pen/ptJKg?editors=101
+        this.languajesProvidersModel = {
+            relations: [{
+                lang: 'Inglés',
+                prov: 'quest'
+            }, {
+                lang: 'Francés',
+                prov: 'lingua'
+            }, {
+                lang: 'Portugués',
+                prov: 'wordBee'
+            }]
+        };
+
+        /*$('#deleteLang').on('click', (ev, ind) => {
+            console.log(ev, ind);
+        })*/
+        $('delete-lang-btn').each(function (index, el) {
+            $(el).on('DELETE_LANGUAGE', function (ev) {
+                console.log('click', ev.target.attributes);
+                _this2.deleteLang($(ev.target).attr('data-ind'));
+            });
+        });
+
+        $('#confirmAddLanguageBtn').on('click', function (ev) {
+            _this2.addLang();
+        });
+
+        DataBind.bind($('#wrap-select-idioma-empresa'), this.languajesProvidersModel);
         console.log('SelectLanguages instanciado');
     }
 
     /*jshint unused:true*/
 
     _createClass(SelectLanguages, [{
+        key: 'deleteLang',
+        value: function deleteLang(ind) {
+            console.log('delete', ind);
+            //console.log('delete '+ this.languajesProvidersModel.relations[ind]);
+        }
+    }, {
+        key: 'addLang',
+        value: function addLang() {
+            console.log('Añadimos un idioma');
+            $('#addLangModal').modal('hide');
+        }
+    }], [{
         key: 'foo',
         value: function foo() {
             console.log('foo');

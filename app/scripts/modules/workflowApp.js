@@ -1,15 +1,15 @@
-/*exported WorkflowNavbar */
+/*exported WorkflowNavbar, webComponents */
 
 'use strict';
 
 import {WorkflowNavbar} from './workflowNavbar';
 import * as pages from '../pages/pages';
+import * as webComponents from './webcomponents-repsol';
 
 
 export class WorkflowApp {
     constructor(elem, navbar) {
-        const that = this;
-        that.elem = elem; 
+        this.elem = elem; 
         this.navbar = new WorkflowNavbar(navbar); 
         this.state = 'home';
         this.currentSec = 'empty';
@@ -52,7 +52,8 @@ export class WorkflowApp {
         }
         if (newState === 'select-idioma-empresa'){
             this.currentSec = new pages.SelectLanguages($('#section-view'));
-            //this.currentSec.foo();
+            //this.currentSec.deleteLang(1);
+            //pages.SelectLanguages.foo();
         }
         if (newState === 'task-list'){
             this.currentSec = new pages.TaskList($('#section-view'));

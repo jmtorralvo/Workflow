@@ -1,5 +1,4 @@
 /*exported TranslateAPI */
-/*global AjaxRequest */
 
 'use strict';
 
