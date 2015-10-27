@@ -33,7 +33,7 @@
                     </select>
                 </td>
                 <td>
-                     <delete-lang-btn data-ind=1></delete-lang-btn>
+                    <delete-lang-btn data-ind=1></delete-lang-btn>
                 </td>
             </tr>
             <tr>
@@ -48,29 +48,42 @@
                     </select>
                 </td>
                 <td>
-                     <delete-lang-btn data-ind=2></delete-lang-btn>
+                    <delete-lang-btn data-ind=2></delete-lang-btn>
                 </td>
             </tr>
         </table>
     </div>
 </div>
-
-
 <!-- Modal -->
 <div class="modal fade" id="addLangModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button id="confirmAddLanguageBtn" type="button" class="btn btn-primary">Aceptar</button>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Seleccione Proveedor e Idioma</h4> 
+            </div>
+            <div class="modal-body">
+                <div class="col-xs-6">
+                	<h4>Idioma</h4>
+                    <select class="provider-select">
+                        <option value="aleman">Alemán</option>
+                        <option value="polaco">Polaco</option>
+                        <option value="italiano">Italiano</option> 
+                    </select>
+                </div>
+                <div class="col-xs-6">
+                	<h4>Proveedor</h4>
+                    <select class="provider-select">
+                        <option value="lingua">Lingua S.A.</option>
+                        <option value="quest">Quest</option>
+                        <option value="wordBee">WordBee</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button id="confirmAddLanguageBtn" type="button" class="btn btn-primary">Aceptar</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

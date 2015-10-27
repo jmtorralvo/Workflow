@@ -2,12 +2,10 @@
 
 export class AjaxRequest {
     constructor() {
-        console.log('ajaxReq');
+        
     }
 
-    get(config) {
-        console.log('get', config);
-
+    static get(config) {
         let peticionConfig = {
             url: null,
             params: null,
@@ -20,7 +18,7 @@ export class AjaxRequest {
         });
     }
 
-    post(config) {
+    static post(config) {
         let peticionConfig = {
             url: null,
             params: null,
@@ -35,7 +33,7 @@ export class AjaxRequest {
         });
     }
 
-    put(config) {
+    static put(config) {
         let peticionConfig = {
             url: null,
             params: null,
@@ -50,7 +48,7 @@ export class AjaxRequest {
         });
     }
 
-    del(config) {
+    static del(config) {
         let peticionConfig = {
             url: null,
             params: null,

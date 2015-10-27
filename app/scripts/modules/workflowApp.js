@@ -21,29 +21,23 @@ export class WorkflowApp {
         });
     }
 
-    init() {
-        this.config();
-    }
-
-    config() {
-
-    }
-
     changeState(newState) {
-        let self = this;
         this.state = newState;
         /*jshint unused:false*/
-        this.elem.load('sections/' + newState + '.html', function(tmpl, status) {
+        this.elem.load('sections/' + newState + '.html', (tmpl, status) => {
             if (status === 'success'){
-                self.currentSec = null;
-                self.instanceSec(newState);
+                this.currentSec = null;
+                this.instanceSec(newState);
             }    
         });
         /*jshint unused:true*/
     }
 
-    instanceSec(newState){
 
+    instanceSec(newState){
+        if (newState === 'listado-traducciones'){
+            this.currentSec = new pages.TransationsList(); 
+        }
         if (newState === 'config-empresas'){
             this.currentSec = new pages.ConfigEnterprises($('#section-view'));
         }
@@ -54,9 +48,6 @@ export class WorkflowApp {
             this.currentSec = new pages.SelectLanguages($('#section-view'));
             //this.currentSec.deleteLang(1);
             //pages.SelectLanguages.foo();
-        }
-        if (newState === 'task-list'){
-            this.currentSec = new pages.TaskList($('#section-view'));
         }
     }
 

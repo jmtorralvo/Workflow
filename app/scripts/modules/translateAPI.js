@@ -9,21 +9,13 @@ from './ajaxRequest';
 
 
 export class TranslateAPI extends AjaxRequest {
-    constructor() { 
+    constructor() {
         super();
     }
-    getItems(obj) {
+    static getItems(obj) {
+       /* let req = new AjaxRequest(); 
+        return req.get(obj);*/
         return super.get(obj);
     }
-
-    getItem(id) {
-        /// params?
-        return super.get({
-            id: id
-        });
-    }
-
-    sendToTranslate(obj) {
-        return super.post(obj);
-    }
 }
+ 

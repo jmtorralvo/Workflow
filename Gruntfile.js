@@ -43,7 +43,7 @@ module.exports = function(grunt) {
             },
             browserify: {
                 files: ['<%= config.app %>/scripts/{,*/}*.js', '!<%= config.app %>/scripts/bundle.js'],
-                tasks: ['clean:dev', 'newer:browserify'],
+                tasks: ['clean:dev', 'browserify'],
                 options: {
                     reload: true
                 }
