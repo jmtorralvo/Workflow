@@ -1,4 +1,4 @@
-/*exported runtime, utils, TranslateAPI, DataBind */
+/*exported runtime, TranslateAPI, Utils, app */
 
 'use strict';
 
@@ -9,8 +9,6 @@ import {WorkflowApp} from './modules/workflowApp';
 
 var app = new WorkflowApp($('#section-view'), $('#workflow-navbar'));
 
-
-console.log('4 is odd? ' + Utils.odd(4));
 
 /*var myModel = {};
 DataBind.bind($('#section-view'), myModel);*/

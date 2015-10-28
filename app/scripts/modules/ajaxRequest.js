@@ -14,7 +14,8 @@ export class AjaxRequest {
         peticionConfig = $.extend({}, peticionConfig, config);
         return $.ajax({
             method: 'GET',
-            url: peticionConfig.url
+            url: peticionConfig.url,
+            params: peticionConfig.params
         });
     }
 

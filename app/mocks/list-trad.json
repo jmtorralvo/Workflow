@@ -1,32 +1,107 @@
 {
     "items": [{
-        "pagina": "Lorem ipsum",
-        "id": "32543465V",
+        "id": "25892e17-80f6-415f-9c65-7395632f0223",
+        "page": "respsol.es/socios",
+        "demandBy": "Luciano Pérez",
+        "uri": "http://www.repsol.com",
         "originLang": "ES",
         "destLang": "EN",
         "state": "Pendiente aprob.",
-        "priority": "Alta",
-        "inCharge": "Leopoldo Suárez Vigas",
-        "initialDate": "19/04/16"
+        "priority": 2,
+        "mode": "Manual",
+        "initialDate": "10/03/15",
+        "detail": {
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
+            "notify": true,
+            "inCharge": "Tiago Lopes",
+            "translateBy" : "Quest",
+            "channel": "Portal",
+            "historical": [{
+                "task": "Enviado a traducción",
+                "initialDate": "10/03/15",
+                "finalDate": "14/03/05",
+                "inCharge": "Tiago Lopes"
+            }, {
+                "task": "Traduciendo",
+                "initialDate": "14/03/15",
+                "finalDate": "22/03/05",
+                "inCharge": "Tiago Lopes"
+            }, {
+                "task": "Pendiente de aprobación",
+                "initialDate": "22/03/15",
+                "finalDate": "24/03/05",
+                "inCharge": "Tiago Lopes"
+            }],
+            "components": [{
+                "label": "Carrousel Imagenes"
+            }]
+        }
     },
     {
-        "pagina": "Lorem ipsum 2",
-        "id": "8549639I",
+        "id": "55172m23-93b1-415f-1c29-2357581r0115",
+        "page": "respsol.es/home",
+        "demandBy": "Igor Suárez",
+        "uri": "http://www.repsol.com",
         "originLang": "ES",
-        "destLang": "ALEM, FRA",
-        "state": "Pendiente aprob.",
-        "priority": "Normal",
-        "inCharge": "Herman Von Deisler",
-        "initialDate": "22/02/16"
+        "destLang": "POR, ALEM",
+        "state": "Pendiente trad.",
+        "priority": 1,
+        "mode": "Automático",
+        "initialDate": "22/03/16",
+        "detail": {
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
+            "notify": false,
+            "inCharge": "Enrique Salas Morato",
+            "translateBy" : "",
+            "channel": "Negocio",
+            "historical": [{
+                "task": "Enviado a traducción",
+                "initialDate": "22/03/15",
+                "finalDate": "24/03/05",
+                "inCharge": "Tiago Lopes"
+            }, {
+                "task": "Traduciendo",
+                "initialDate": "24/03/15",
+                "finalDate": "",
+                "inCharge": "Tiago Lopes"
+            }],
+            "components": [{
+                "label": "Visor 2"
+            }]
+        }
     },
     {
-        "pagina": "Lorem ipsum 3",
-        "id": "92766634P",
-        "originLang": "EN",
-        "destLang": "POR",
-        "state": "PPendiente trad.",
-        "priority": "Baja",
-        "inCharge": "Enrique Salas Morato",
-        "initialDate": "05/01/16"
-    }]
+        "id": "55172m23-93b1-415f-1c29-2357581r0115",
+        "page": "respsol.es/home",
+        "demandBy": "Igor Suárez",
+        "uri": "http://www.repsol.com",
+        "originLang": "ES",
+        "destLang": "POR, ALEM",
+        "state": "Pendiente trad.",
+        "priority": 0,
+        "mode": "Automático",
+        "initialDate": "22/03/16",
+        "detail": {
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
+            "notify": false,
+            "inCharge": "Enrique Salas Morato",
+            "translateBy" : "",
+            "channel": "Negocio",
+            "historical": [{
+                "task": "Enviado a traducción",
+                "initialDate": "22/03/15",
+                "finalDate": "24/03/05",
+                "inCharge": "Tiago Lopes"
+            }, {
+                "task": "Traduciendo",
+                "initialDate": "24/03/15",
+                "finalDate": "",
+                "inCharge": "Tiago Lopes"
+            }],
+            "components": [{
+                "label": "Visor 2"
+            }]
+        }
+    }
+    ]
 }

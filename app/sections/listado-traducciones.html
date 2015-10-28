@@ -1,35 +1,72 @@
-<div class="row">
-    <div id="wrap-listado-traducciones">
-        <div class="row margin-bottom-lg">
-            <p>
-                <h1>Listado Traducciones</h1>
-            </p>
-        </div>
-       <!--  <div class="row">
-            <input id="filter" type="text" class="form-control" placeholder="Filtrar por...">
-        </div> -->
-        <!-- <div class="row">
-            <table class="table table-hover">
-                <thead>
-                    <th>Página</th>
-                    <th>Id</th>
-                    <th>Traducir de</th>
-                    <th>Traducir al</th>
-                    <th>Estado</th>
-                    <th>Prioridad</th>
-                    <th>Encargado trad.</th>
-                    <th>Fecha enviado</th>
-                </thead>
-                <tbody id="translations-list-cont" class="searchable">
-                </tbody>
-            </table>
-        </div> -->
-        <div class="row">
-            <table id="table" data-sort-name="name" data-show-filter="true" class="searchable"></table>
+<div id="container-listado-traducciones">
+    <div class="row">
+        <div id="wrap-listado-traducciones" class="col-xs-12">
+            <div class="row margin-bottom-lg">
+                <div class="col-xs-12">
+                    <h1>Listado Traducciones</h1>
+                </div>
+            </div>
+            <div id="translation-wrap" class="row margin-bottom-lg">
+                <div class="col-xs-4">
+                    <input id="filter-translations" type="text" class="form-control" placeholder="Filtrar por...">
+                </div>
+                <!--  <div class="col-xs-4 col-xs-offset-4">
+                <button type="button" class="btnExport btn btn-primary">Exportar a Excel</button>
+            </div>   -->
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table id="translate-table" data-sort-name="name" data-show-filter="true" class="searchable"></table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <button class="btnExport">Export Excel</button>
-    <button id="fooBtn">Foo Btn</button>
+    <div id="wrap-table-to-export" class="row">
+        <h1>Listado Traducciones</h1>
+        <table id="translate-table-to-export"></table>
+    </div>
+    <div class="row margin-top-lg">
+        <div class="col-xs-12">
+            <button type="button" class="btnExport btn btn-primary">Exportar a Excel</button>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="translation-modal-details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Detalle</h4>
+                </div>
+                <div class="modal-body">
+                    <table id="translate-table-detail"></table>
+                    <!-- <table>
+                        <tr>
+                            <th>Tarea</th>
+                            <th>Fecha inicio</th>
+                            <th>Fecha final</th>
+                        </tr>
+                        <div class="row data-to-fill">
+                        </div>
+                    </table> -->
+                   <!--  <table>
+                        <tr>
+                            <th>Tarea</th>
+                            <th>Fecha inicio</th>
+                            <th>Fecha final</th>  
+                        </tr>
+                        <tr>
+                            <td>January</td>
+                            <td>$100</td>
+                            <td>$200</td>
+                        </tr>
+                    </table> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+                    <button type="button" class="btnExport-modal btn btn-primary">Exportar Excel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

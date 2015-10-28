@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*exported runtime, utils, TranslateAPI, DataBind */
+/*exported runtime, TranslateAPI, Utils, app */
 
 'use strict';
 
@@ -12,8 +12,6 @@ var _modulesTranslateAPI = require('./modules/translateAPI');
 var _modulesWorkflowApp = require('./modules/workflowApp');
 
 var app = new _modulesWorkflowApp.WorkflowApp($('#section-view'), $('#workflow-navbar'));
-
-console.log('4 is odd? ' + _modulesUtils.Utils.odd(4));
 
 /*var myModel = {};
 DataBind.bind($('#section-view'), myModel);*/
@@ -45,7 +43,8 @@ var AjaxRequest = (function () {
             peticionConfig = $.extend({}, peticionConfig, config);
             return $.ajax({
                 method: 'GET',
-                url: peticionConfig.url
+                url: peticionConfig.url,
+                params: peticionConfig.params
             });
         }
     }, {
@@ -133,10 +132,34 @@ var TranslateAPI = (function (_AjaxRequest) {
 
     _createClass(TranslateAPI, null, [{
         key: 'getItems',
-        value: function getItems(obj) {
+        value: function getItems() {
             /* let req = new AjaxRequest(); 
              return req.get(obj);*/
-            return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, obj);
+            return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
+                url: './mocks/list-trad.json'
+            });
+        }
+    }, {
+        key: 'getItemsByUserId',
+        value: function getItemsByUserId(userId) {
+            /* return super.get({
+                 url: './mocks/posible-in-charge.json'
+             });*/
+        }
+    }, {
+        key: 'getPosibleInCharge',
+        value: function getPosibleInCharge() {
+            return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
+                url: './mocks/posible-in-charge.json'
+            });
+        }
+    }, {
+        key: 'changePersonInCharge',
+        value: function changePersonInCharge(par) {
+            /*return super.put({
+                url: './mocks/posible-in-charge.json',
+                params: 
+            });*/
         }
     }]);
 
@@ -162,11 +185,42 @@ var Utils = (function () {
     }
 
     _createClass(Utils, null, [{
-        key: 'odd',
-        value: function odd(num) {
+        key: 'isOdd',
+        value: function isOdd(num) {
             var resp = null;
             resp = num % 2 === 0 ? true : false;
             return resp;
+        }
+    }, {
+        key: 'exportExcel',
+        value: function exportExcel(title, wrap, ev) {
+            var a = document.createElement('a');
+            var dataType = 'data:application/vnd.ms-excel';
+            var tableHtml = wrap[0].outerHTML;
+            a.href = dataType + ', ' + escape(tableHtml);
+            a.download = title + '.xls';
+            a.click();
+            ev.preventDefault();
+        }
+    }, {
+        key: 'getCurrentDate',
+        value: function getCurrentDate() {
+            var currentTime = new Date();
+            var day = currentTime.getDate();
+            var month = currentTime.getMonth() + 1;
+            var year = currentTime.getFullYear();
+
+            day = day < 10 ? '0' + day : day;
+            month = month < 10 ? '0' + month : month;
+
+            var todayDate = day + '/' + month + '/' + year;
+            return todayDate.toString();
+        }
+    }, {
+        key: 'getPriorityLabel',
+        value: function getPriorityLabel(num) {
+            var pLabels = ['Baja', 'Media', 'Alta'];
+            return pLabels[num];
         }
     }]);
 
@@ -206,7 +260,7 @@ var DeleteLangBtn = (function (_HTMLElement) {
         value: function createdCallback() {
             var _this = this;
 
-            $(this).append('<button>Eliminar Idioma</button>');
+            $(this).append('<button type="button" class="btn btn-primary">Eliminar idioma</button>');
             //this.textContent = 'Eliminar Idioma';
             $(this).on('click', function (ev) {
                 $(_this).trigger('DELETE_LANGUAGE');
@@ -362,6 +416,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var _modulesTranslateAPI = require('../modules/translateAPI');
 
+var _modulesUtils = require('../modules/utils');
+
 var TransationsList = (function () {
     function TransationsList() {
         var _this = this;
@@ -370,77 +426,47 @@ var TransationsList = (function () {
 
         this.model = undefined;
         this.wrap = $('#wrap-listado-traducciones');
+        this.posibleInCharge = [];
 
-        _modulesTranslateAPI.TranslateAPI.getItems({
-            url: './mocks/list-trad.json'
-        }).then(function (resp) {
+        _modulesTranslateAPI.TranslateAPI.getItems().then(function (resp) {
             _this.model = resp;
-            _this.drawTables(resp);
+            _modulesTranslateAPI.TranslateAPI.getPosibleInCharge().then(function (resp) {
+                _this.posibleInCharge = resp;
+                _this.drawTables(_this.model);
+            });
         });
     }
 
     _createClass(TransationsList, [{
-        key: 'run',
-        value: function run() {
-            var _this2 = this;
-
-            $('.btnExport').click(function (e) {
-                var a = document.createElement('a');
-                var dataType = 'data:application/vnd.ms-excel';
-                var tableHtml = _this2.wrap[0].outerHTML.replace(/ /g, '%20');
-                a.href = dataType + ', ' + tableHtml;
-                a.download = 'Listado_traducciones' + '.xls';
-                a.click();
-                e.preventDefault();
-            });
-
-            /*  $('#filter').keyup(function() {
-                    var rex = new RegExp($(this).val(), 'i');
-                  $('.searchable tr').hide();
-                  $('.searchable tr').filter(function() {
-                      return rex.test($(this).text());
-                  }).show();
-              });*/
-
-            $('#fooBtn').on('click', function (ev) {
-                _this2.model.items = [{
-                    "pagina": "dsasdgdasg",
-                    "id": "92766634P",
-                    "originLang": "EN",
-                    "destLang": "POR",
-                    "state": "PPendiente trad.",
-                    "priority": "TOP",
-                    "inCharge": "Paul",
-                    "initialDate": "05/01/16"
-                }];
-                $('#table').bootstrapTable('load', _this2.model.items);
-            });
-        }
-    }, {
         key: 'drawTables',
         value: function drawTables(resp) {
-            /*for (var i = 0; i < resp.items.length; i++) {
-                let tmp = '<tr data-toggle="collapse" data-target="#accordion' + i + '" class="clickable">';
-                tmp += this.parseObj(resp.items[i], i);
-                tmp += '</tr><tr><td colspan="3"><div id="accordion' + i + '" class="collapse">Detalle ' + i + '</div></td></tr>';
-                this.wrap.find('#translations-list-cont').append(tmp);
-            }
-            */
-            $('#table').bootstrapTable({
-                data: this.model.items,
-                search: true,
-                searchAlign: 'left',
-                onClickRow: function onClickRow(item, $element) {
-                    alert(item);
+            var _this2 = this;
+
+            $('#translate-table').bootstrapTable({
+                data: resp.items,
+                search: false,
+                onClickCell: function onClickCell(field, value, row, element) {
+                    if (field !== 'inCharge') {
+                        _this2.displayDetails(field, value, row, element);
+                    }
                 },
                 columns: [{
-                    field: 'pagina',
+                    field: 'id',
+                    title: 'Id'
+                }, {
+                    field: 'page',
                     title: 'Página',
                     sortable: true
                 }, {
-                    field: 'id',
-                    title: 'Id',
+                    field: 'demandBy',
+                    title: 'Solicitado por',
                     sortable: true
+                }, {
+                    field: 'uri',
+                    title: 'Código URI',
+                    formatter: function formatter(value, row, index) {
+                        return '<a href="' + value + '" target="_blank">link</a>';
+                    }
                 }, {
                     field: 'originLang',
                     title: 'Idioma origen',
@@ -456,32 +482,163 @@ var TransationsList = (function () {
                 }, {
                     field: 'priority',
                     title: 'Prioridad',
-                    sortable: true
-                }, {
-                    field: 'inCharge',
-                    title: 'Responsable',
                     sortable: true,
                     formatter: function formatter(value, row, index) {
-                        return '<input name="elementname"  value="' + value + '"/>';
+                        return _modulesUtils.Utils.getPriorityLabel(value);
                     }
+                }, {
+                    field: 'mode',
+                    title: 'Modo',
+                    sortable: true
                 }, {
                     field: 'initialDate',
                     title: 'Fecha Inicio',
                     sortable: true
                 }]
             });
+            this.init();
 
-            //DataBind.bind(this.wrap, resp);
-            this.run();
+            /*
+            ,
+                    formatter: (value, row, index) => {
+                        let tmp = '<select class="select-in-charge">';
+                        for (var i = 0; i < this.posibleInCharge.length; i++) {
+                            if (this.posibleInCharge[i] === row.inCharge) {
+                                tmp += '<option value="' + this.posibleInCharge[i] + '" selected>' + this.posibleInCharge[i] + '</option>';
+                            } else {
+                                tmp += '<option value="' + this.posibleInCharge[i] + '">' + this.posibleInCharge[i] + '</option>';
+                            }
+                        }
+                        return tmp + '</select>';
+                    }
+                    */
         }
     }, {
-        key: 'parseObj',
-        value: function parseObj(obj, num) {
-            var tmp = '';
-            $.each(obj, function (key) {
-                tmp += '<td data-key="items[' + num + '].' + key + '"></td>';
+        key: 'init',
+        value: function init() {
+            var _this3 = this;
+
+            /// Event Export
+            $('.btnExport').click(function (ev) {
+
+                $('#translate-table-to-export').bootstrapTable({
+                    data: _this3.model.items,
+                    search: false,
+                    onClickCell: function onClickCell(field, value, row, element) {
+                        if (field !== 'inCharge') {
+                            _this3.displayDetails(field, value, row, element);
+                        }
+                    },
+                    columns: [{
+                        field: 'page',
+                        title: 'Página',
+                        sortable: true
+                    }, {
+                        field: 'id',
+                        title: 'Id',
+                        sortable: true
+                    }, {
+                        field: 'originLang',
+                        title: 'Idioma origen',
+                        sortable: true
+                    }, {
+                        field: 'destLang',
+                        title: 'Idioma destino',
+                        sortable: true
+                    }, {
+                        field: 'state',
+                        title: 'Estado',
+                        sortable: true
+                    }, {
+                        field: 'priority',
+                        title: 'Prioridad',
+                        sortable: true
+                    }, {
+                        field: 'inCharge',
+                        title: 'Responsable',
+                        sortable: true
+                    }, {
+                        field: 'initialDate',
+                        title: 'Fecha Inicio',
+                        sortable: true
+                    }]
+                });
+
+                $('#wrap-table-to-export').find('.fixed-table-loading').remove();
+                _modulesUtils.Utils.exportExcel('Listado traducciones ' + _modulesUtils.Utils.getCurrentDate(), $('#wrap-table-to-export'), ev);
             });
-            return tmp;
+
+            $('.btnExport-modal').click(function (ev) {
+                _modulesUtils.Utils.exportExcel('Listado detalle traducciones ' + _modulesUtils.Utils.getCurrentDate(), $('#translation-modal-details'), ev);
+            });
+
+            // Event change person in charge
+            $('select').on('change', function (ev) {
+                _this3.render();
+            });
+
+            //Filter
+            $('#filter-translations').keyup(function () {
+                var rex = new RegExp($(this).val(), 'i');
+                $('.searchable tr').hide();
+                $('.searchable tr').filter(function () {
+                    return rex.test($(this).text());
+                }).show();
+            });
+        }
+    }, {
+        key: 'displayDetails',
+        value: function displayDetails(field, value, row, element) {
+            $('#translation-modal-details').find('.modal-title').html('Detalle ' + row.page + ' por ' + row.inCharge);
+
+            $('#translate-table-detail').bootstrapTable({
+                data: this.modal.items.detail,
+                columns: [{
+                    field: 'page',
+                    title: 'Página'
+                }, {
+                    field: 'id',
+                    title: 'Id'
+                }, {
+                    field: 'originLang',
+                    title: 'Idioma origen'
+                }, {
+                    field: 'destLang',
+                    title: 'Idioma destino'
+                }, {
+                    field: 'state',
+                    title: 'Estado'
+                }, {
+                    field: 'priority',
+                    title: 'Prioridad'
+                }, {
+                    field: 'inCharge',
+                    title: 'Responsable'
+                }, {
+                    field: 'initialDate',
+                    title: 'Fecha Inicio'
+                }]
+            });
+            /* $('#translation-modal-details').find('.data-to-fill').empty();
+               for (var i = 0; i < row.details.historical.length; i++) {
+                 let tmp = '<div class="col-xs-4" data-key="details.historical[' + i + '].task"></div>';
+                 tmp += '<div class="col-xs-4" data-key="details.historical[' + i + '].initDate"></div>';
+                 tmp += '<div class="col-xs-4" data-key="details.historical[' + i + '].finalDate"></div>';
+                 $('#translation-modal-details').find('.data-to-fill').append(tmp);
+             }
+               DataBind.bind($('#translation-modal-details'), row);*/
+            $('#translation-modal-details').modal('show');
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this4 = this;
+
+            $('select option:selected').each(function (index, val) {
+                _this4.model.items[index].inCharge = val.value;
+            });
+            $('#translate-table').bootstrapTable('load', this.model.items);
+            //DataBind.bind(this.wrap, this.model.items);
         }
     }]);
 
@@ -491,7 +648,7 @@ var TransationsList = (function () {
 exports.TransationsList = TransationsList;
 
 var HistoricalPage = function HistoricalPage(container) {
-    var _this3 = this;
+    var _this5 = this;
 
     _classCallCheck(this, HistoricalPage);
 
@@ -501,7 +658,7 @@ var HistoricalPage = function HistoricalPage(container) {
     $('.btnExport').click(function (e) {
         var a = document.createElement('a');
         var dataType = 'data:application/vnd.ms-excel';
-        var tableHtml = _this3.container[0].outerHTML.replace(/ /g, '%20');
+        var tableHtml = _this5.container[0].outerHTML.replace(/ /g, '%20');
         a.href = dataType + ', ' + tableHtml;
         a.download = 'historical' + '.xls';
         a.click();
@@ -516,15 +673,13 @@ exports.HistoricalPage = HistoricalPage;
 
 var ConfigEnterprises = function ConfigEnterprises(container) {
     _classCallCheck(this, ConfigEnterprises);
-
-    console.log('config instanciado');
 };
 
 exports.ConfigEnterprises = ConfigEnterprises;
 
 var SelectLanguages = (function () {
     function SelectLanguages(container) {
-        var _this4 = this;
+        var _this6 = this;
 
         _classCallCheck(this, SelectLanguages);
 
@@ -549,16 +704,15 @@ var SelectLanguages = (function () {
         $('delete-lang-btn').each(function (index, el) {
             $(el).on('DELETE_LANGUAGE', function (ev) {
                 console.log('click', ev.target.attributes);
-                _this4.deleteLang($(ev.target).attr('data-ind'));
+                _this6.deleteLang($(ev.target).attr('data-ind'));
             });
         });
 
         $('#confirmAddLanguageBtn').on('click', function (ev) {
-            _this4.addLang();
+            _this6.addLang();
         });
 
         DataBind.bind(this.wrap, this.languajesProvidersModel);
-        console.log('SelectLanguages instanciado');
     }
 
     /*jshint unused:true*/
@@ -582,4 +736,4 @@ var SelectLanguages = (function () {
 
 exports.SelectLanguages = SelectLanguages;
 
-},{"../modules/translateAPI":3}]},{},[1]);
+},{"../modules/translateAPI":3,"../modules/utils":4}]},{},[1]);
