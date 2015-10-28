@@ -11,7 +11,7 @@
         "mode": "Manual",
         "initialDate": "10/03/15",
         "detail": {
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
+            "comments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
             "notify": true,
             "inCharge": "Tiago Lopes",
             "translateBy" : "Quest",
@@ -49,7 +49,7 @@
         "mode": "Automático",
         "initialDate": "22/03/16",
         "detail": {
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
+            "comments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
             "notify": false,
             "inCharge": "Enrique Salas Morato",
             "translateBy" : "",
@@ -82,7 +82,7 @@
         "mode": "Automático",
         "initialDate": "22/03/16",
         "detail": {
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
+            "comments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
             "notify": false,
             "inCharge": "Enrique Salas Morato",
             "translateBy" : "",

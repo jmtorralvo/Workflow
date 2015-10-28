@@ -31,36 +31,22 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="translation-modal-details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="translate-modal-details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">Detalle</h4>
                 </div>
                 <div class="modal-body">
-                    <table id="translate-table-detail"></table>
-                    <!-- <table>
-                        <tr>
-                            <th>Tarea</th>
-                            <th>Fecha inicio</th>
-                            <th>Fecha final</th>
-                        </tr>
-                        <div class="row data-to-fill">
-                        </div>
-                    </table> -->
-                   <!--  <table>
-                        <tr>
-                            <th>Tarea</th>
-                            <th>Fecha inicio</th>
-                            <th>Fecha final</th>  
-                        </tr>
-                        <tr>
-                            <td>January</td>
-                            <td>$100</td>
-                            <td>$200</td>
-                        </tr>
-                    </table> -->
+                    <table id="translate-table-detail" class="margin-bottom-lg"></table>
+                    <span class="separator"></span>
+                    <table id="translate-table-historical"></table>
+                    <span class="separator"></span>
+                    <table id="translate-table-comments">
+                        <tr>Observaciones:</tr>
+                        <td class="comments"></td>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>

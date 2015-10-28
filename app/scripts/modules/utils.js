@@ -11,10 +11,13 @@ export class Utils {
         return resp;
     }
 
-    static exportExcel(title, wrap, ev) {
+    static exportExcel(title, wrapArray, ev) {
         let a = document.createElement('a');
         let dataType = 'data:application/vnd.ms-excel';
-        let tableHtml = wrap[0].outerHTML;
+        let tableHtml = '';
+        for (var i = 0; i < wrapArray.length; i++) {
+            tableHtml += wrapArray[i][0].outerHTML;
+        }
         a.href = dataType + ', ' + escape(tableHtml);
         a.download = title + '.xls';
         a.click();

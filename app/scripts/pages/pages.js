@@ -37,7 +37,7 @@ export class TransationsList {
             columns: [{
                 field: 'id',
                 title: 'Id'
-            },{
+            }, {
                 field: 'page',
                 title: 'Página',
                 sortable: true
@@ -49,7 +49,7 @@ export class TransationsList {
                 field: 'uri',
                 title: 'Código URI',
                 formatter: (value, row, index) => {
-                    return '<a href="'+value+'" target="_blank">link</a>';
+                    return '<a href="' + value + '" target="_blank">link</a>';
                 }
             }, {
                 field: 'originLang',
@@ -70,7 +70,7 @@ export class TransationsList {
                 formatter: (value, row, index) => {
                     return Utils.getPriorityLabel(value);
                 }
-            },{
+            }, {
                 field: 'mode',
                 title: 'Modo',
                 sortable: true
@@ -81,9 +81,7 @@ export class TransationsList {
             }]
         });
         this.init();
-
         /*
-        ,
                 formatter: (value, row, index) => {
                     let tmp = '<select class="select-in-charge">';
                     for (var i = 0; i < this.posibleInCharge.length; i++) {
@@ -100,64 +98,69 @@ export class TransationsList {
 
     init() {
         /// Event Export
-        $('.btnExport').click((ev) => {
-
+        $('.btnExport').on('click', (ev) => {
             $('#translate-table-to-export').bootstrapTable({
                 data: this.model.items,
-                search: false,
-                onClickCell: (field, value, row, element) => {
-                    if (field !== 'inCharge') {
-                        this.displayDetails(field, value, row, element);
-                    }
-                },
                 columns: [{
+                    field: 'id',
+                    title: 'Id'
+                }, {
                     field: 'page',
                     title: 'Página',
-                    sortable: true,
+                    sortable: true
                 }, {
-                    field: 'id',
-                    title: 'Id',
-                    sortable: true,
+                    field: 'demandBy',
+                    title: 'Solicitado por',
+                    sortable: true
+                }, {
+                    field: 'uri',
+                    title: 'Código URI'
                 }, {
                     field: 'originLang',
                     title: 'Idioma origen',
-                    sortable: true,
+                    sortable: true
                 }, {
                     field: 'destLang',
                     title: 'Idioma destino',
-                    sortable: true,
+                    sortable: true
                 }, {
                     field: 'state',
                     title: 'Estado',
-                    sortable: true,
+                    sortable: true
                 }, {
                     field: 'priority',
                     title: 'Prioridad',
                     sortable: true,
+                    formatter: (value, row, index) => {
+                        return Utils.getPriorityLabel(value);
+                    }
                 }, {
-                    field: 'inCharge',
-                    title: 'Responsable',
+                    field: 'mode',
+                    title: 'Modo',
                     sortable: true
                 }, {
                     field: 'initialDate',
                     title: 'Fecha Inicio',
-                    sortable: true,
+                    sortable: true
                 }]
             });
 
             $('#wrap-table-to-export').find('.fixed-table-loading').remove();
-            Utils.exportExcel('Listado traducciones ' + Utils.getCurrentDate(), $('#wrap-table-to-export'), ev);
+            Utils.exportExcel('Listado traducciones ' + Utils.getCurrentDate(), 
+                                [$('#wrap-table-to-export')], 
+                                ev);
         });
 
-        $('.btnExport-modal').click((ev) => {
-            Utils.exportExcel('Listado detalle traducciones ' + Utils.getCurrentDate(), $('#translation-modal-details'), ev);
+        $('.btnExport-modal').on('click',(ev) => {
+            Utils.exportExcel('Listado detalle traducciones ' + Utils.getCurrentDate(), 
+                                [$('#translate-table-detail'), $('#translate-table-historical'),$('#translate-table-comments')], 
+                                ev);
         });
 
         // Event change person in charge
         $('select').on('change', (ev) => {
             this.render();
         });
-
 
         //Filter
         $('#filter-translations').keyup(function() {
@@ -170,16 +173,18 @@ export class TransationsList {
     }
 
     displayDetails(field, value, row, element) {
-        $('#translation-modal-details').find('.modal-title').html('Detalle ' + row.page + ' por ' + row.inCharge);
+
+        $('#translate-modal-details').find('.modal-title').html('Detalle ' + row.page + ' por ' + row.demandBy);
 
         $('#translate-table-detail').bootstrapTable({
-            data: this.modal.items.detail,
+            data: [row],
+            search: false,
             columns: [{
-                field: 'page',
-                title: 'Página'
-            }, {
-                field: 'id',
-                title: 'Id'
+                field: 'uri',
+                title: 'Código URI',
+                formatter: (value, row, index) => {
+                    return '<a href="' + value + '" target="_blank">' + value + '</a>';
+                }
             }, {
                 field: 'originLang',
                 title: 'Idioma origen'
@@ -187,30 +192,47 @@ export class TransationsList {
                 field: 'destLang',
                 title: 'Idioma destino'
             }, {
+                field: 'detail.channel',
+                title: 'Canal'
+            }, {
+                field: 'demandBy',
+                title: 'Solicitado por'
+            }, {
                 field: 'state',
                 title: 'Estado'
             }, {
                 field: 'priority',
-                title: 'Prioridad'
+                title: 'Prioridad',
+                formatter: (value, row, index) => {
+                    return Utils.getPriorityLabel(value);
+                }
             }, {
-                field: 'inCharge',
-                title: 'Responsable'
-            }, {
-                field: 'initialDate',
-                title: 'Fecha Inicio'
+                field: 'state',
+                title: 'Estado'
             }]
         });
-        /* $('#translation-modal-details').find('.data-to-fill').empty();
+        $('#translate-table-historical').bootstrapTable({
+            data: row.detail.historical,
+            search: false,
+            columns: [{
+                field: 'task',
+                title: 'Tarea'
+            },{
+                field: 'initialDate',
+                title: 'Fecha inicio'
+            },{
+                field: 'finalDate',
+                title: 'Fecha final'
+            },{
+                field: 'inCharge',
+                title: 'A cargo de'
+            }]
+        });
+        $('#translate-modal-details').find('.comments').html(row.detail.comments);
 
-         for (var i = 0; i < row.details.historical.length; i++) {
-             let tmp = '<div class="col-xs-4" data-key="details.historical[' + i + '].task"></div>';
-             tmp += '<div class="col-xs-4" data-key="details.historical[' + i + '].initDate"></div>';
-             tmp += '<div class="col-xs-4" data-key="details.historical[' + i + '].finalDate"></div>';
-             $('#translation-modal-details').find('.data-to-fill').append(tmp);
-         }
-
-         DataBind.bind($('#translation-modal-details'), row);*/
-        $('#translation-modal-details').modal('show');
+        //If we need to modify data throught browser:
+        //DataBind.bind($('#translation-modal-details'), row);
+        $('#translate-modal-details').modal('show');
     }
 
     render() {

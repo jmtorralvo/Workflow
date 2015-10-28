@@ -193,10 +193,13 @@ var Utils = (function () {
         }
     }, {
         key: 'exportExcel',
-        value: function exportExcel(title, wrap, ev) {
+        value: function exportExcel(title, wrapArray, ev) {
             var a = document.createElement('a');
             var dataType = 'data:application/vnd.ms-excel';
-            var tableHtml = wrap[0].outerHTML;
+            var tableHtml = '';
+            for (var i = 0; i < wrapArray.length; i++) {
+                tableHtml += wrapArray[i][0].outerHTML;
+            }
             a.href = dataType + ', ' + escape(tableHtml);
             a.download = title + '.xls';
             a.click();
@@ -497,9 +500,7 @@ var TransationsList = (function () {
                 }]
             });
             this.init();
-
             /*
-            ,
                     formatter: (value, row, index) => {
                         let tmp = '<select class="select-in-charge">';
                         for (var i = 0; i < this.posibleInCharge.length; i++) {
@@ -519,24 +520,23 @@ var TransationsList = (function () {
             var _this3 = this;
 
             /// Event Export
-            $('.btnExport').click(function (ev) {
-
+            $('.btnExport').on('click', function (ev) {
                 $('#translate-table-to-export').bootstrapTable({
                     data: _this3.model.items,
-                    search: false,
-                    onClickCell: function onClickCell(field, value, row, element) {
-                        if (field !== 'inCharge') {
-                            _this3.displayDetails(field, value, row, element);
-                        }
-                    },
                     columns: [{
+                        field: 'id',
+                        title: 'Id'
+                    }, {
                         field: 'page',
                         title: 'Página',
                         sortable: true
                     }, {
-                        field: 'id',
-                        title: 'Id',
+                        field: 'demandBy',
+                        title: 'Solicitado por',
                         sortable: true
+                    }, {
+                        field: 'uri',
+                        title: 'Código URI'
                     }, {
                         field: 'originLang',
                         title: 'Idioma origen',
@@ -552,10 +552,13 @@ var TransationsList = (function () {
                     }, {
                         field: 'priority',
                         title: 'Prioridad',
-                        sortable: true
+                        sortable: true,
+                        formatter: function formatter(value, row, index) {
+                            return _modulesUtils.Utils.getPriorityLabel(value);
+                        }
                     }, {
-                        field: 'inCharge',
-                        title: 'Responsable',
+                        field: 'mode',
+                        title: 'Modo',
                         sortable: true
                     }, {
                         field: 'initialDate',
@@ -565,11 +568,11 @@ var TransationsList = (function () {
                 });
 
                 $('#wrap-table-to-export').find('.fixed-table-loading').remove();
-                _modulesUtils.Utils.exportExcel('Listado traducciones ' + _modulesUtils.Utils.getCurrentDate(), $('#wrap-table-to-export'), ev);
+                _modulesUtils.Utils.exportExcel('Listado traducciones ' + _modulesUtils.Utils.getCurrentDate(), [$('#wrap-table-to-export')], ev);
             });
 
-            $('.btnExport-modal').click(function (ev) {
-                _modulesUtils.Utils.exportExcel('Listado detalle traducciones ' + _modulesUtils.Utils.getCurrentDate(), $('#translation-modal-details'), ev);
+            $('.btnExport-modal').on('click', function (ev) {
+                _modulesUtils.Utils.exportExcel('Listado detalle traducciones ' + _modulesUtils.Utils.getCurrentDate(), [$('#translate-table-detail'), $('#translate-table-historical'), $('#translate-table-comments')], ev);
             });
 
             // Event change person in charge
@@ -589,16 +592,18 @@ var TransationsList = (function () {
     }, {
         key: 'displayDetails',
         value: function displayDetails(field, value, row, element) {
-            $('#translation-modal-details').find('.modal-title').html('Detalle ' + row.page + ' por ' + row.inCharge);
+
+            $('#translate-modal-details').find('.modal-title').html('Detalle ' + row.page + ' por ' + row.demandBy);
 
             $('#translate-table-detail').bootstrapTable({
-                data: this.modal.items.detail,
+                data: [row],
+                search: false,
                 columns: [{
-                    field: 'page',
-                    title: 'Página'
-                }, {
-                    field: 'id',
-                    title: 'Id'
+                    field: 'uri',
+                    title: 'Código URI',
+                    formatter: function formatter(value, row, index) {
+                        return '<a href="' + value + '" target="_blank">' + value + '</a>';
+                    }
                 }, {
                     field: 'originLang',
                     title: 'Idioma origen'
@@ -606,28 +611,47 @@ var TransationsList = (function () {
                     field: 'destLang',
                     title: 'Idioma destino'
                 }, {
+                    field: 'detail.channel',
+                    title: 'Canal'
+                }, {
+                    field: 'demandBy',
+                    title: 'Solicitado por'
+                }, {
                     field: 'state',
                     title: 'Estado'
                 }, {
                     field: 'priority',
-                    title: 'Prioridad'
+                    title: 'Prioridad',
+                    formatter: function formatter(value, row, index) {
+                        return _modulesUtils.Utils.getPriorityLabel(value);
+                    }
                 }, {
-                    field: 'inCharge',
-                    title: 'Responsable'
-                }, {
-                    field: 'initialDate',
-                    title: 'Fecha Inicio'
+                    field: 'state',
+                    title: 'Estado'
                 }]
             });
-            /* $('#translation-modal-details').find('.data-to-fill').empty();
-               for (var i = 0; i < row.details.historical.length; i++) {
-                 let tmp = '<div class="col-xs-4" data-key="details.historical[' + i + '].task"></div>';
-                 tmp += '<div class="col-xs-4" data-key="details.historical[' + i + '].initDate"></div>';
-                 tmp += '<div class="col-xs-4" data-key="details.historical[' + i + '].finalDate"></div>';
-                 $('#translation-modal-details').find('.data-to-fill').append(tmp);
-             }
-               DataBind.bind($('#translation-modal-details'), row);*/
-            $('#translation-modal-details').modal('show');
+            $('#translate-table-historical').bootstrapTable({
+                data: row.detail.historical,
+                search: false,
+                columns: [{
+                    field: 'task',
+                    title: 'Tarea'
+                }, {
+                    field: 'initialDate',
+                    title: 'Fecha inicio'
+                }, {
+                    field: 'finalDate',
+                    title: 'Fecha final'
+                }, {
+                    field: 'inCharge',
+                    title: 'A cargo de'
+                }]
+            });
+            $('#translate-modal-details').find('.comments').html(row.detail.comments);
+
+            //If we need to modify data throught browser:
+            //DataBind.bind($('#translation-modal-details'), row);
+            $('#translate-modal-details').modal('show');
         }
     }, {
         key: 'render',

@@ -57,7 +57,7 @@ module.exports = function(grunt) {
             },
             less: {
                 files: ['<%= config.app %>/styles/**/*.less'],
-                tasks: ['newer:less:server', 'newer:postcss'],
+                tasks: ['less:server', 'postcss'],
                 options: {
                     reload: true
                 }
