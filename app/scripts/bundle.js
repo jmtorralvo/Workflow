@@ -193,25 +193,26 @@ var Utils = (function () {
         }
     }, {
         key: 'exportExcel',
-        value: function exportExcel(title, wrapArray, ev) {
-            var a = document.createElement('a');
-            var dataType = 'data:application/vnd.ms-excel';
-            var tableHtml = '';
+        value: function exportExcel(filename, wrapArray, ev, headerTemplate) {
+            var a = document.createElement('a'),
+                dataType = 'data:application/vnd.ms-excel',
+                tableHtml = headerTemplate ? headerTemplate : '';
             for (var i = 0; i < wrapArray.length; i++) {
                 tableHtml += wrapArray[i][0].outerHTML;
+                tableHtml += '<table id="translate-table-comments"><tbody><tr></tr><tr><td class="comments">-----------------------------<br></td></tr></tbody></table>';
             }
             a.href = dataType + ', ' + escape(tableHtml);
-            a.download = title + '.xls';
+            a.download = filename + '.xls';
             a.click();
             ev.preventDefault();
         }
     }, {
         key: 'getCurrentDate',
         value: function getCurrentDate() {
-            var currentTime = new Date();
-            var day = currentTime.getDate();
-            var month = currentTime.getMonth() + 1;
-            var year = currentTime.getFullYear();
+            var currentTime = new Date(),
+                day = currentTime.getDate(),
+                month = currentTime.getMonth() + 1,
+                year = currentTime.getFullYear();
 
             day = day < 10 ? '0' + day : day;
             month = month < 10 ? '0' + month : month;
@@ -360,11 +361,11 @@ var WorkflowApp = (function () {
             if (newState === 'listado-traducciones') {
                 this.currentSec = new pages.TransationsList();
             }
+            if (newState === 'configurar-responsables') {
+                this.currentSec = new pages.ConfigInCharge($('#section-view'));
+            }
             if (newState === 'config-empresas') {
                 this.currentSec = new pages.ConfigEnterprises($('#section-view'));
-            }
-            if (newState === 'historical-list') {
-                this.currentSec = new pages.HistoricalPage($('#section-view'));
             }
             if (newState === 'select-idioma-empresa') {
                 this.currentSec = new pages.SelectLanguages($('#section-view'));
@@ -428,8 +429,8 @@ var TransationsList = (function () {
         _classCallCheck(this, TransationsList);
 
         this.model = undefined;
-        this.wrap = $('#wrap-listado-traducciones');
         this.posibleInCharge = [];
+        var wrap = $('#wrap-listado-traducciones');
 
         _modulesTranslateAPI.TranslateAPI.getItems().then(function (resp) {
             _this.model = resp;
@@ -471,15 +472,15 @@ var TransationsList = (function () {
                         return '<a href="' + value + '" target="_blank">link</a>';
                     }
                 }, {
-                    field: 'originLang',
+                    field: 'originalLanguage',
                     title: 'Idioma origen',
                     sortable: true
                 }, {
-                    field: 'destLang',
+                    field: 'destinationLanguage',
                     title: 'Idioma destino',
                     sortable: true
                 }, {
-                    field: 'state',
+                    field: 'currentState',
                     title: 'Estado',
                     sortable: true
                 }, {
@@ -500,19 +501,6 @@ var TransationsList = (function () {
                 }]
             });
             this.init();
-            /*
-                    formatter: (value, row, index) => {
-                        let tmp = '<select class="select-in-charge">';
-                        for (var i = 0; i < this.posibleInCharge.length; i++) {
-                            if (this.posibleInCharge[i] === row.inCharge) {
-                                tmp += '<option value="' + this.posibleInCharge[i] + '" selected>' + this.posibleInCharge[i] + '</option>';
-                            } else {
-                                tmp += '<option value="' + this.posibleInCharge[i] + '">' + this.posibleInCharge[i] + '</option>';
-                            }
-                        }
-                        return tmp + '</select>';
-                    }
-                    */
         }
     }, {
         key: 'init',
@@ -538,15 +526,15 @@ var TransationsList = (function () {
                         field: 'uri',
                         title: 'Código URI'
                     }, {
-                        field: 'originLang',
+                        field: 'originalLanguage',
                         title: 'Idioma origen',
                         sortable: true
                     }, {
-                        field: 'destLang',
+                        field: 'destinationLanguage',
                         title: 'Idioma destino',
                         sortable: true
                     }, {
-                        field: 'state',
+                        field: 'currentState',
                         title: 'Estado',
                         sortable: true
                     }, {
@@ -568,11 +556,11 @@ var TransationsList = (function () {
                 });
 
                 $('#wrap-table-to-export').find('.fixed-table-loading').remove();
-                _modulesUtils.Utils.exportExcel('Listado traducciones ' + _modulesUtils.Utils.getCurrentDate(), [$('#wrap-table-to-export')], ev);
+                _modulesUtils.Utils.exportExcel('Listado traducciones ' + _modulesUtils.Utils.getCurrentDate(), [$('#wrap-table-to-export')], ev, null);
             });
 
             $('.btnExport-modal').on('click', function (ev) {
-                _modulesUtils.Utils.exportExcel('Listado detalle traducciones ' + _modulesUtils.Utils.getCurrentDate(), [$('#translate-table-detail'), $('#translate-table-historical'), $('#translate-table-comments')], ev);
+                _modulesUtils.Utils.exportExcel('Listado detalle traducciones ' + _modulesUtils.Utils.getCurrentDate(), [$('#translate-table-detail'), $('#translate-table-historical'), $('#translate-table-comments')], ev, '<div class="row margin-bottom-lg"><div class="col-xs-12"><h2>Detalle Traducción</h2></div></div>');
             });
 
             // Event change person in charge
@@ -605,10 +593,10 @@ var TransationsList = (function () {
                         return '<a href="' + value + '" target="_blank">' + value + '</a>';
                     }
                 }, {
-                    field: 'originLang',
+                    field: 'originalLanguage',
                     title: 'Idioma origen'
                 }, {
-                    field: 'destLang',
+                    field: 'destinationLanguage',
                     title: 'Idioma destino'
                 }, {
                     field: 'detail.channel',
@@ -617,7 +605,7 @@ var TransationsList = (function () {
                     field: 'demandBy',
                     title: 'Solicitado por'
                 }, {
-                    field: 'state',
+                    field: 'currentState',
                     title: 'Estado'
                 }, {
                     field: 'priority',
@@ -626,7 +614,7 @@ var TransationsList = (function () {
                         return _modulesUtils.Utils.getPriorityLabel(value);
                     }
                 }, {
-                    field: 'state',
+                    field: 'currentState',
                     title: 'Estado'
                 }]
             });
@@ -634,7 +622,7 @@ var TransationsList = (function () {
                 data: row.detail.historical,
                 search: false,
                 columns: [{
-                    field: 'task',
+                    field: 'state',
                     title: 'Tarea'
                 }, {
                     field: 'initialDate',
@@ -642,9 +630,6 @@ var TransationsList = (function () {
                 }, {
                     field: 'finalDate',
                     title: 'Fecha final'
-                }, {
-                    field: 'inCharge',
-                    title: 'A cargo de'
                 }]
             });
             $('#translate-modal-details').find('.comments').html(row.detail.comments);
@@ -662,7 +647,7 @@ var TransationsList = (function () {
                 _this4.model.items[index].inCharge = val.value;
             });
             $('#translate-table').bootstrapTable('load', this.model.items);
-            //DataBind.bind(this.wrap, this.model.items);
+            //DataBind.bind(wrap, this.model.items);
         }
     }]);
 
@@ -671,29 +656,17 @@ var TransationsList = (function () {
 
 exports.TransationsList = TransationsList;
 
-var HistoricalPage = function HistoricalPage(container) {
-    var _this5 = this;
-
-    _classCallCheck(this, HistoricalPage);
+var ConfigInCharge = function ConfigInCharge(container) {
+    _classCallCheck(this, ConfigInCharge);
 
     this.container = container;
     console.log('Historial ha sido instanciado dentro de ', container);
-
-    $('.btnExport').click(function (e) {
-        var a = document.createElement('a');
-        var dataType = 'data:application/vnd.ms-excel';
-        var tableHtml = _this5.container[0].outerHTML.replace(/ /g, '%20');
-        a.href = dataType + ', ' + tableHtml;
-        a.download = 'historical' + '.xls';
-        a.click();
-        e.preventDefault();
-    });
 }
 
 /*jshint unused:false*/
 ;
 
-exports.HistoricalPage = HistoricalPage;
+exports.ConfigInCharge = ConfigInCharge;
 
 var ConfigEnterprises = function ConfigEnterprises(container) {
     _classCallCheck(this, ConfigEnterprises);
@@ -703,7 +676,7 @@ exports.ConfigEnterprises = ConfigEnterprises;
 
 var SelectLanguages = (function () {
     function SelectLanguages(container) {
-        var _this6 = this;
+        var _this5 = this;
 
         _classCallCheck(this, SelectLanguages);
 
@@ -728,12 +701,12 @@ var SelectLanguages = (function () {
         $('delete-lang-btn').each(function (index, el) {
             $(el).on('DELETE_LANGUAGE', function (ev) {
                 console.log('click', ev.target.attributes);
-                _this6.deleteLang($(ev.target).attr('data-ind'));
+                _this5.deleteLang($(ev.target).attr('data-ind'));
             });
         });
 
         $('#confirmAddLanguageBtn').on('click', function (ev) {
-            _this6.addLang();
+            _this5.addLang();
         });
 
         DataBind.bind(this.wrap, this.languajesProvidersModel);

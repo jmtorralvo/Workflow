@@ -11,24 +11,25 @@ export class Utils {
         return resp;
     }
 
-    static exportExcel(title, wrapArray, ev) {
-        let a = document.createElement('a');
-        let dataType = 'data:application/vnd.ms-excel';
-        let tableHtml = '';
+    static exportExcel(filename, wrapArray, ev, headerTemplate) {
+        let a = document.createElement('a'),
+            dataType = 'data:application/vnd.ms-excel',
+            tableHtml = (headerTemplate) ? headerTemplate : '';
         for (var i = 0; i < wrapArray.length; i++) {
             tableHtml += wrapArray[i][0].outerHTML;
+            tableHtml += '<table id="translate-table-comments"><tbody><tr></tr><tr><td class="comments">-----------------------------<br></td></tr></tbody></table>';
         }
         a.href = dataType + ', ' + escape(tableHtml);
-        a.download = title + '.xls';
+        a.download = filename + '.xls';
         a.click();
         ev.preventDefault();
     }
 
     static getCurrentDate() {
-        let currentTime = new Date();
-        let day = currentTime.getDate();
-        let month = currentTime.getMonth() + 1;
-        let year = currentTime.getFullYear();
+        let currentTime = new Date(),
+        day = currentTime.getDate(),
+        month = currentTime.getMonth() + 1,
+        year = currentTime.getFullYear();
 
         day = (day < 10) ? '0'+day : day;
         month = (month < 10) ?  '0' + month : month;

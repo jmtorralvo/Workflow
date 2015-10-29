@@ -4,9 +4,9 @@
         "page": "respsol.es/socios",
         "demandBy": "Luciano Pérez",
         "uri": "http://www.repsol.com",
-        "originLang": "ES",
-        "destLang": "EN",
-        "state": "Pendiente aprob.",
+        "originalLanguage": "ES",
+        "destinationLanguage": "EN",
+        "currentState": "Pendiente aprob.",
         "priority": 2,
         "mode": "Manual",
         "initialDate": "10/03/15",
@@ -17,20 +17,17 @@
             "translateBy" : "Quest",
             "channel": "Portal",
             "historical": [{
-                "task": "Enviado a traducción",
+                "state": "Enviado a traducción",
                 "initialDate": "10/03/15",
-                "finalDate": "14/03/05",
-                "inCharge": "Tiago Lopes"
+                "finalDate": "14/03/05"
             }, {
-                "task": "Traduciendo",
+                "state": "Traduciendo",
                 "initialDate": "14/03/15",
-                "finalDate": "22/03/05",
-                "inCharge": "Tiago Lopes"
+                "finalDate": "22/03/05"
             }, {
-                "task": "Pendiente de aprobación",
+                "state": "Pendiente de aprobación",
                 "initialDate": "22/03/15",
-                "finalDate": "24/03/05",
-                "inCharge": "Tiago Lopes"
+                "finalDate": "24/03/05"
             }],
             "components": [{
                 "label": "Carrousel Imagenes"
@@ -42,9 +39,9 @@
         "page": "respsol.es/home",
         "demandBy": "Igor Suárez",
         "uri": "http://www.repsol.com",
-        "originLang": "ES",
-        "destLang": "POR, ALEM",
-        "state": "Pendiente trad.",
+        "originalLanguage": "ES",
+        "destinationLanguage": "POR, ALEM",
+        "currentState": "Pendiente trad.",
         "priority": 1,
         "mode": "Automático",
         "initialDate": "22/03/16",
@@ -55,15 +52,13 @@
             "translateBy" : "",
             "channel": "Negocio",
             "historical": [{
-                "task": "Enviado a traducción",
+                "state": "Enviado a traducción",
                 "initialDate": "22/03/15",
-                "finalDate": "24/03/05",
-                "inCharge": "Tiago Lopes"
+                "finalDate": "24/03/05"
             }, {
-                "task": "Traduciendo",
+                "state": "Traduciendo",
                 "initialDate": "24/03/15",
-                "finalDate": "",
-                "inCharge": "Tiago Lopes"
+                "finalDate": ""
             }],
             "components": [{
                 "label": "Visor 2"
@@ -75,9 +70,9 @@
         "page": "respsol.es/home",
         "demandBy": "Igor Suárez",
         "uri": "http://www.repsol.com",
-        "originLang": "ES",
-        "destLang": "POR, ALEM",
-        "state": "Pendiente trad.",
+        "originalLanguage": "ES",
+        "destinationLanguage": "POR, ALEM",
+        "currentState": "Pendiente trad.",
         "priority": 0,
         "mode": "Automático",
         "initialDate": "22/03/16",
@@ -88,15 +83,13 @@
             "translateBy" : "",
             "channel": "Negocio",
             "historical": [{
-                "task": "Enviado a traducción",
+                "state": "Enviado a traducción",
                 "initialDate": "22/03/15",
-                "finalDate": "24/03/05",
-                "inCharge": "Tiago Lopes"
+                "finalDate": "24/03/05"
             }, {
-                "task": "Traduciendo",
+                "state": "Traduciendo",
                 "initialDate": "24/03/15",
-                "finalDate": "",
-                "inCharge": "Tiago Lopes"
+                "finalDate": ""
             }],
             "components": [{
                 "label": "Visor 2"

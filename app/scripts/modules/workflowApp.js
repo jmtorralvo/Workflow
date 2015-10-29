@@ -38,11 +38,11 @@ export class WorkflowApp {
         if (newState === 'listado-traducciones'){
             this.currentSec = new pages.TransationsList(); 
         }
+         if (newState === 'configurar-responsables'){
+            this.currentSec = new pages.ConfigInCharge($('#section-view'));
+        }
         if (newState === 'config-empresas'){
             this.currentSec = new pages.ConfigEnterprises($('#section-view'));
-        }
-        if (newState === 'historical-list'){
-            this.currentSec = new pages.HistoricalPage($('#section-view'));
         }
         if (newState === 'select-idioma-empresa'){
             this.currentSec = new pages.SelectLanguages($('#section-view'));

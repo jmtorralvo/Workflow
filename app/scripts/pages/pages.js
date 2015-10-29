@@ -13,9 +13,9 @@ from '../modules/utils';
 export class TransationsList {
     constructor() {
         this.model = undefined;
-        this.wrap = $('#wrap-listado-traducciones');
         this.posibleInCharge = [];
-
+        const wrap = $('#wrap-listado-traducciones');
+        
         TranslateAPI.getItems().then((resp) => {
             this.model = resp;
             TranslateAPI.getPosibleInCharge().then((resp) => {
@@ -52,15 +52,15 @@ export class TransationsList {
                     return '<a href="' + value + '" target="_blank">link</a>';
                 }
             }, {
-                field: 'originLang',
+                field: 'originalLanguage',
                 title: 'Idioma origen',
                 sortable: true
             }, {
-                field: 'destLang',
+                field: 'destinationLanguage',
                 title: 'Idioma destino',
                 sortable: true
             }, {
-                field: 'state',
+                field: 'currentState',
                 title: 'Estado',
                 sortable: true
             }, {
@@ -81,19 +81,6 @@ export class TransationsList {
             }]
         });
         this.init();
-        /*
-                formatter: (value, row, index) => {
-                    let tmp = '<select class="select-in-charge">';
-                    for (var i = 0; i < this.posibleInCharge.length; i++) {
-                        if (this.posibleInCharge[i] === row.inCharge) {
-                            tmp += '<option value="' + this.posibleInCharge[i] + '" selected>' + this.posibleInCharge[i] + '</option>';
-                        } else {
-                            tmp += '<option value="' + this.posibleInCharge[i] + '">' + this.posibleInCharge[i] + '</option>';
-                        }
-                    }
-                    return tmp + '</select>';
-                }
-                */
     }
 
     init() {
@@ -116,15 +103,15 @@ export class TransationsList {
                     field: 'uri',
                     title: 'Código URI'
                 }, {
-                    field: 'originLang',
+                    field: 'originalLanguage',
                     title: 'Idioma origen',
                     sortable: true
                 }, {
-                    field: 'destLang',
+                    field: 'destinationLanguage',
                     title: 'Idioma destino',
                     sortable: true
                 }, {
-                    field: 'state',
+                    field: 'currentState',
                     title: 'Estado',
                     sortable: true
                 }, {
@@ -146,15 +133,15 @@ export class TransationsList {
             });
 
             $('#wrap-table-to-export').find('.fixed-table-loading').remove();
-            Utils.exportExcel('Listado traducciones ' + Utils.getCurrentDate(), 
-                                [$('#wrap-table-to-export')], 
-                                ev);
+            Utils.exportExcel('Listado traducciones ' + Utils.getCurrentDate(), [$('#wrap-table-to-export')],
+                ev,
+                null);
         });
 
-        $('.btnExport-modal').on('click',(ev) => {
-            Utils.exportExcel('Listado detalle traducciones ' + Utils.getCurrentDate(), 
-                                [$('#translate-table-detail'), $('#translate-table-historical'),$('#translate-table-comments')], 
-                                ev);
+        $('.btnExport-modal').on('click', (ev) => {
+            Utils.exportExcel('Listado detalle traducciones ' + Utils.getCurrentDate(), [$('#translate-table-detail'), $('#translate-table-historical'), $('#translate-table-comments')],
+                ev,
+                '<div class="row margin-bottom-lg"><div class="col-xs-12"><h2>Detalle Traducción</h2></div></div>');
         });
 
         // Event change person in charge
@@ -186,10 +173,10 @@ export class TransationsList {
                     return '<a href="' + value + '" target="_blank">' + value + '</a>';
                 }
             }, {
-                field: 'originLang',
+                field: 'originalLanguage',
                 title: 'Idioma origen'
             }, {
-                field: 'destLang',
+                field: 'destinationLanguage',
                 title: 'Idioma destino'
             }, {
                 field: 'detail.channel',
@@ -198,7 +185,7 @@ export class TransationsList {
                 field: 'demandBy',
                 title: 'Solicitado por'
             }, {
-                field: 'state',
+                field: 'currentState',
                 title: 'Estado'
             }, {
                 field: 'priority',
@@ -207,7 +194,7 @@ export class TransationsList {
                     return Utils.getPriorityLabel(value);
                 }
             }, {
-                field: 'state',
+                field: 'currentState',
                 title: 'Estado'
             }]
         });
@@ -215,17 +202,14 @@ export class TransationsList {
             data: row.detail.historical,
             search: false,
             columns: [{
-                field: 'task',
+                field: 'state',
                 title: 'Tarea'
-            },{
+            }, {
                 field: 'initialDate',
                 title: 'Fecha inicio'
-            },{
+            }, {
                 field: 'finalDate',
                 title: 'Fecha final'
-            },{
-                field: 'inCharge',
-                title: 'A cargo de'
             }]
         });
         $('#translate-modal-details').find('.comments').html(row.detail.comments);
@@ -240,26 +224,16 @@ export class TransationsList {
             this.model.items[index].inCharge = val.value;
         });
         $('#translate-table').bootstrapTable('load', this.model.items);
-        //DataBind.bind(this.wrap, this.model.items);
+        //DataBind.bind(wrap, this.model.items);
     }
 }
 
 
-export class HistoricalPage {
+export class ConfigInCharge {
     constructor(container) {
-
         this.container = container;
         console.log('Historial ha sido instanciado dentro de ', container);
 
-        $('.btnExport').click((e) => {
-            var a = document.createElement('a');
-            var dataType = 'data:application/vnd.ms-excel';
-            var tableHtml = this.container[0].outerHTML.replace(/ /g, '%20');
-            a.href = dataType + ', ' + tableHtml;
-            a.download = 'historical' + '.xls';
-            a.click();
-            e.preventDefault();
-        });
     }
 }
 
