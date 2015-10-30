@@ -27,12 +27,12 @@ export class Utils {
 
     static getCurrentDate() {
         let currentTime = new Date(),
-        day = currentTime.getDate(),
-        month = currentTime.getMonth() + 1,
-        year = currentTime.getFullYear();
+            day = currentTime.getDate(),
+            month = currentTime.getMonth() + 1,
+            year = currentTime.getFullYear();
 
-        day = (day < 10) ? '0'+day : day;
-        month = (month < 10) ?  '0' + month : month;
+        day = (day < 10) ? '0' + day : day;
+        month = (month < 10) ? '0' + month : month;
 
         let todayDate = day + '/' + month + '/' + year;
         return todayDate.toString();
@@ -40,7 +40,7 @@ export class Utils {
 
     static getPriorityLabel(num) {
         let pLabels = ['Baja', 'Media', 'Alta'];
-       return pLabels[num];
+        return pLabels[num];
     }
 
     static populateLanguageSelect(array, elem) {
@@ -52,6 +52,17 @@ export class Utils {
             elem[0].appendChild(opt);
         }
     }
+
+    static validateEmail(email) {
+        let re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        return re.test(email);
+    }
+
+    static getLangNameById(array, id){
+        
+    }
+
+    static getIdLangByName(array, name){
+
+    }
 }
-
-

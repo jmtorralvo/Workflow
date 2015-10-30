@@ -1,7 +1,7 @@
 export class DeleteLangBtn extends HTMLElement {
     // Fires when an instance of the element is created.
     createdCallback() {
-        $(this).append( '<button type="button" class="btn btn-primary">'+$(this).attr( 'label' )+'</button>' );
+        $(this).append( '<button type="button" class="btn '+$(this).attr('data-class')+'">'+$(this).attr( 'label' )+'</button>' );
         $(this).on('click', (ev) => {
             $(this).trigger($(this).attr( 'event' ));
             ev.preventDefault();

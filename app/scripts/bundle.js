@@ -56,11 +56,13 @@ var AjaxRequest = (function () {
                 timeout: null
             };
             peticionConfig = $.extend({}, peticionConfig, config);
+            peticionConfig.params = JSON.stringify(peticionConfig.params);
 
             return $.ajax({
                 method: 'POST',
+                dataType: "json",
                 url: peticionConfig.url,
-                params: peticionConfig.params
+                data: peticionConfig.params
             });
         }
     }, {
@@ -131,8 +133,8 @@ var TranslateAPI = (function (_AjaxRequest) {
     }
 
     _createClass(TranslateAPI, null, [{
-        key: 'getItems',
-        value: function getItems() {
+        key: 'getTranslationItems',
+        value: function getTranslationItems() {
             /* let req = new AjaxRequest(); 
              return req.get(obj);*/
             return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
@@ -140,8 +142,8 @@ var TranslateAPI = (function (_AjaxRequest) {
             });
         }
     }, {
-        key: 'getItemsByUserId',
-        value: function getItemsByUserId(userId) {
+        key: 'getTranslationItemByUserId',
+        value: function getTranslationItemByUserId(userId) {
             /* return super.get({
                  url: './mocks/posible-in-charge.json'
              });*/
@@ -154,10 +156,18 @@ var TranslateAPI = (function (_AjaxRequest) {
             });
         }
     }, {
-        key: 'getLanguages',
-        value: function getLanguages() {
+        key: 'getAllLanguages',
+        value: function getAllLanguages() {
             return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
                 url: './mocks/languages-array.json'
+            });
+        }
+    }, {
+        key: 'addLanguageAndPersonInCharge',
+        value: function addLanguageAndPersonInCharge(obj) {
+            return _get(Object.getPrototypeOf(TranslateAPI), 'post', this).call(this, {
+                url: './API/addLanguageAndPersonInCharge',
+                params: obj
             });
         }
     }, {
@@ -244,6 +254,18 @@ var Utils = (function () {
                 elem[0].appendChild(opt);
             }
         }
+    }, {
+        key: 'validateEmail',
+        value: function validateEmail(email) {
+            var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+            return re.test(email);
+        }
+    }, {
+        key: 'getLangNameById',
+        value: function getLangNameById(array, id) {}
+    }, {
+        key: 'getIdLangByName',
+        value: function getIdLangByName(array, name) {}
     }]);
 
     return Utils;
@@ -282,7 +304,7 @@ var DeleteLangBtn = (function (_HTMLElement) {
         value: function createdCallback() {
             var _this = this;
 
-            $(this).append('<button type="button" class="btn btn-primary">' + $(this).attr('label') + '</button>');
+            $(this).append('<button type="button" class="btn ' + $(this).attr('data-class') + '">' + $(this).attr('label') + '</button>');
             $(this).on('click', function (ev) {
                 $(_this).trigger($(_this).attr('event'));
                 ev.preventDefault();
@@ -448,7 +470,7 @@ var TransationsList = (function () {
         this.model = undefined;
         var wrap = $('#wrap-listado-traducciones');
 
-        _modulesTranslateAPI.TranslateAPI.getItems().then(function (resp) {
+        _modulesTranslateAPI.TranslateAPI.getTranslationItems().then(function (resp) {
             _this.model = resp;
             _this.drawTables(_this.model);
         });
@@ -681,14 +703,12 @@ var ConfigInCharge = (function () {
 
         _modulesTranslateAPI.TranslateAPI.getLanguageInCharge().then(function (resp) {
             _this5.languagesLinkedInCharge = resp;
-            _this5.addLanguage(_this5.languagesLinkedInCharge);
+            _this5.renderLanguages(_this5.languagesLinkedInCharge);
             _this5.init();
         }, function (error) {
             console.log('Imposible cargar datos ', error);
         });
     }
-
-    /*jshint unused:false*/
 
     _createClass(ConfigInCharge, [{
         key: 'init',
@@ -697,9 +717,10 @@ var ConfigInCharge = (function () {
 
             //Events
             $('#add-inCharge-btn').on('click', function (ev) {
-                _modulesTranslateAPI.TranslateAPI.getLanguages().then(function (resp) {
+                _modulesTranslateAPI.TranslateAPI.getAllLanguages().then(function (resp) {
                     _this6.posibleLanguages = resp;
                     _modulesUtils.Utils.populateLanguageSelect(resp, $('#add-language-modal').find('select'));
+                    $('#add-language-modal').find('#email-inCharge-modal').val('');
                     $('#add-language-modal').modal('show');
                 }, function (error) {
                     //console.log('Imposible cargar datos ', error)
@@ -707,30 +728,48 @@ var ConfigInCharge = (function () {
             });
 
             $('#accept-adding-language-btn').on('click', function (ev) {
-                _modulesTranslateAPI.TranslateAPI.getLanguageInCharge().then(function (resp) {
-                    _this6.languagesLinkedInCharge = resp;
-                    _this6.addLanguage(_this6.languagesLinkedInCharge);
-                }, function (error) {
-                    //console.log('Imposible cargar datos ', error)
-                });
+                if (_modulesUtils.Utils.validateEmail($('#email-inCharge-modal').val()) === true) {
+                    var objToPost = {
+                        id: $('#add-language-modal').find('select').val(),
+                        inCharge: $('#add-language-modal').find('#email-inCharge-modal').val()
+                    };
+                    _this6.postNewRow(objToPost);
+                } else {
+                    $('#add-language-modal').find('.alert-msg').animate({
+                        opacity: 1
+                    }, 1, function () {
+                        setTimeout(function () {
+                            $('#add-language-modal').find('.alert-msg').css('opacity', 0);
+                        }, 4000);
+                    });
+                }
             });
         }
     }, {
-        key: 'addLanguage',
-        value: function addLanguage(array) {
-            var _this7 = this;
-
+        key: 'postNewRow',
+        value: function postNewRow(obj) {
+            _modulesTranslateAPI.TranslateAPI.addLanguageAndPersonInCharge(obj).then(function (resp) {}, function (error) {});
+            $('#add-language-modal').modal('hide');
+        }
+    }, {
+        key: 'renderLanguages',
+        value: function renderLanguages(array) {
             var count = 0;
             $('.container-manage-select').find('form').empty();
+
+            var drawLanguagesIncharge = function drawLanguagesIncharge(obj) {
+                var str = obj.language.languageName;
+                $('.container-manage-select').find('.language-title').last().html(str);
+            };
 
             var iteratorToDrawRows = function iteratorToDrawRows() {
                 $('.container-manage-select').find('form').append($('<div class="row row-language">').load('templates/idioma-responsable.html', function (tmpl, status) {
                     if (status === 'success') {
                         if (count === array.length - 1) {
-                            _this7.drawLanguagesIncharge(array[count]);
+                            drawLanguagesIncharge(array[count]);
                             return;
                         } else {
-                            _this7.drawLanguagesIncharge(array[count]);
+                            drawLanguagesIncharge(array[count]);
                             count++;
                             iteratorToDrawRows();
                         }
@@ -739,12 +778,6 @@ var ConfigInCharge = (function () {
             };
 
             iteratorToDrawRows();
-        }
-    }, {
-        key: 'drawLanguagesIncharge',
-        value: function drawLanguagesIncharge(obj) {
-            var str = obj.language.languageName;
-            $('.container-manage-select').find('.language-title').last().html(str);
         }
     }]);
 
@@ -761,7 +794,7 @@ exports.ConfigEnterprises = ConfigEnterprises;
 
 var SelectLanguages = (function () {
     function SelectLanguages(container) {
-        var _this8 = this;
+        var _this7 = this;
 
         _classCallCheck(this, SelectLanguages);
 
@@ -786,18 +819,16 @@ var SelectLanguages = (function () {
         $('delete-lang-btn').each(function (index, el) {
             $(el).on('DELETE_LANGUAGE', function (ev) {
                 console.log('click', ev.target.attributes);
-                _this8.deleteLang($(ev.target).attr('data-ind'));
+                _this7.deleteLang($(ev.target).attr('data-ind'));
             });
         });
 
         $('#confirmAddLanguageBtn').on('click', function (ev) {
-            _this8.addLang();
+            _this7.addLang();
         });
 
         DataBind.bind(this.wrap, this.languajesProvidersModel);
     }
-
-    /*jshint unused:true*/
 
     _createClass(SelectLanguages, [{
         key: 'deleteLang',

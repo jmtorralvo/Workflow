@@ -26,11 +26,13 @@ export class AjaxRequest {
             timeout: null
         };
         peticionConfig = $.extend({}, peticionConfig, config);
+        peticionConfig.params = JSON.stringify(peticionConfig.params ); 
 
         return $.ajax({
             method: 'POST',
+            dataType: "json",
             url: peticionConfig.url,
-            params: peticionConfig.params
+            data: peticionConfig.params
         });
     }
 

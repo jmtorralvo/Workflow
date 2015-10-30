@@ -13,7 +13,7 @@ export class TranslateAPI extends AjaxRequest {
         super();
     }
 
-    static getItems() {
+    static getTranslationItems() {
         /* let req = new AjaxRequest(); 
          return req.get(obj);*/
         return super.get({
@@ -21,7 +21,7 @@ export class TranslateAPI extends AjaxRequest {
         });
     }
 
-    static getItemsByUserId(userId) {
+    static getTranslationItemByUserId(userId) {
         /* return super.get({
              url: './mocks/posible-in-charge.json'
          });*/
@@ -34,9 +34,16 @@ export class TranslateAPI extends AjaxRequest {
     }
 
 
-    static getLanguages() {
+    static getAllLanguages() {
         return super.get({
             url: './mocks/languages-array.json'
+        });
+    }
+
+    static addLanguageAndPersonInCharge(obj){
+        return super.post({
+            url: './API/addLanguageAndPersonInCharge',
+            params : obj
         });
     }
 

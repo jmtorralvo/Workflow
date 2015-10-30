@@ -15,7 +15,7 @@ export class TransationsList {
         this.model = undefined;
         const wrap = $('#wrap-listado-traducciones');
 
-        TranslateAPI.getItems().then((resp) => {
+        TranslateAPI.getTranslationItems().then((resp) => {
             this.model = resp;
             this.drawTables(this.model);
         });
@@ -233,7 +233,7 @@ export class ConfigInCharge {
 
         TranslateAPI.getLanguageInCharge().then((resp) => {
             this.languagesLinkedInCharge = resp;
-            this.addLanguage(this.languagesLinkedInCharge);
+            this.renderLanguages(this.languagesLinkedInCharge);
             this.init();
         }, (error) => {
             console.log('Imposible cargar datos ', error);
@@ -241,12 +241,12 @@ export class ConfigInCharge {
     }
 
     init() {
-    
         //Events
         $('#add-inCharge-btn').on('click', (ev) => {
-            TranslateAPI.getLanguages().then((resp) => {
+            TranslateAPI.getAllLanguages().then((resp) => {
                 this.posibleLanguages = resp;
                 Utils.populateLanguageSelect(resp, $('#add-language-modal').find('select'));
+                $('#add-language-modal').find('#email-inCharge-modal').val('');
                 $('#add-language-modal').modal('show');
             }, (error) => {
                 //console.log('Imposible cargar datos ', error)
@@ -254,28 +254,49 @@ export class ConfigInCharge {
         });
 
         $('#accept-adding-language-btn').on('click', (ev) => {
-            TranslateAPI.getLanguageInCharge().then((resp) => {
-                this.languagesLinkedInCharge = resp;
-                this.addLanguage(this.languagesLinkedInCharge);
-            }, (error) => {
-                //console.log('Imposible cargar datos ', error)
-            });
+            if (Utils.validateEmail($('#email-inCharge-modal').val()) === true) {
+                let objToPost = {
+                    id: $('#add-language-modal').find('select').val(),
+                    inCharge: $('#add-language-modal').find('#email-inCharge-modal').val()
+                };
+                this.postNewRow(objToPost);
+            } else {
+                $('#add-language-modal').find('.alert-msg').animate({
+                    opacity: 1
+                }, 1, () => {
+                    setTimeout(() => {
+                        $('#add-language-modal').find('.alert-msg').css('opacity', 0);
+                    }, 4000);
+                });
+            }
         });
+    };
+
+    postNewRow(obj) {
+        TranslateAPI.addLanguageAndPersonInCharge(obj).then((resp) => {
+        }, (error) => {
+        });
+        $('#add-language-modal').modal('hide');
     }
 
-    addLanguage(array) {
+    renderLanguages(array) {
         let count = 0;
         $('.container-manage-select').find('form').empty();
+
+        const drawLanguagesIncharge = (obj) => {
+            let str = obj.language.languageName;
+            $('.container-manage-select').find('.language-title').last().html(str);
+        };
 
         const iteratorToDrawRows = () => {
             $('.container-manage-select').find('form').append($('<div class="row row-language">')
                 .load('templates/idioma-responsable.html', (tmpl, status) => {
                     if (status === 'success') {
                         if (count === array.length - 1) {
-                            this.drawLanguagesIncharge(array[count]);
+                            drawLanguagesIncharge(array[count]);
                             return;
                         } else {
-                            this.drawLanguagesIncharge(array[count]);
+                            drawLanguagesIncharge(array[count]);
                             count++;
                             iteratorToDrawRows();
                         }
@@ -285,15 +306,9 @@ export class ConfigInCharge {
 
         iteratorToDrawRows();
     }
-
-    drawLanguagesIncharge(obj) {
-        let str = obj.language.languageName;
-        $('.container-manage-select').find('.language-title').last().html(str);
-    }
 }
 
 
-/*jshint unused:false*/
 export class ConfigEnterprises {
     constructor(container) {
 
@@ -344,5 +359,3 @@ export class SelectLanguages {
         $('#addLangModal').modal('hide');
     }
 }
-
-/*jshint unused:true*/
