@@ -1,0 +1,19 @@
+[{
+    "language": {
+        "id": "1",
+        "languageName": "Inglés"
+    },
+    "inCharge": "francisDrake@repsol.com"
+}, {
+    "language": {
+        "id": "4",
+        "languageName": "Portugués"
+    },
+    "inCharge": "marieCurie@repsol.com"
+}, {
+    "language": {
+        "id" : "7",
+        "languageName" : "Ruso"
+    },
+    "inCharge": "erwinSchrodinger@repsol.com"
+}]

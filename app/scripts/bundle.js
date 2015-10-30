@@ -147,10 +147,17 @@ var TranslateAPI = (function (_AjaxRequest) {
              });*/
         }
     }, {
-        key: 'getPosibleInCharge',
-        value: function getPosibleInCharge() {
+        key: 'getLanguageInCharge',
+        value: function getLanguageInCharge() {
             return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
-                url: './mocks/posible-in-charge.json'
+                url: './mocks/language-inCharge-array.json'
+            });
+        }
+    }, {
+        key: 'getLanguages',
+        value: function getLanguages() {
+            return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
+                url: './mocks/languages-array.json'
             });
         }
     }, {
@@ -226,6 +233,17 @@ var Utils = (function () {
             var pLabels = ['Baja', 'Media', 'Alta'];
             return pLabels[num];
         }
+    }, {
+        key: 'populateLanguageSelect',
+        value: function populateLanguageSelect(array, elem) {
+            elem.empty();
+            for (var i = 0; i < array.length; i++) {
+                var opt = document.createElement('option');
+                opt.innerHTML = array[i].languageName;
+                opt.value = array[i].id;
+                elem[0].appendChild(opt);
+            }
+        }
     }]);
 
     return Utils;
@@ -264,10 +282,9 @@ var DeleteLangBtn = (function (_HTMLElement) {
         value: function createdCallback() {
             var _this = this;
 
-            $(this).append('<button type="button" class="btn btn-primary">Eliminar idioma</button>');
-            //this.textContent = 'Eliminar Idioma';
+            $(this).append('<button type="button" class="btn btn-primary">' + $(this).attr('label') + '</button>');
             $(this).on('click', function (ev) {
-                $(_this).trigger('DELETE_LANGUAGE');
+                $(_this).trigger($(_this).attr('event'));
                 ev.preventDefault();
             });
         }
@@ -429,15 +446,11 @@ var TransationsList = (function () {
         _classCallCheck(this, TransationsList);
 
         this.model = undefined;
-        this.posibleInCharge = [];
         var wrap = $('#wrap-listado-traducciones');
 
         _modulesTranslateAPI.TranslateAPI.getItems().then(function (resp) {
             _this.model = resp;
-            _modulesTranslateAPI.TranslateAPI.getPosibleInCharge().then(function (resp) {
-                _this.posibleInCharge = resp;
-                _this.drawTables(_this.model);
-            });
+            _this.drawTables(_this.model);
         });
     }
 
@@ -656,15 +669,87 @@ var TransationsList = (function () {
 
 exports.TransationsList = TransationsList;
 
-var ConfigInCharge = function ConfigInCharge(container) {
-    _classCallCheck(this, ConfigInCharge);
+var ConfigInCharge = (function () {
+    function ConfigInCharge(container) {
+        var _this5 = this;
 
-    this.container = container;
-    console.log('Historial ha sido instanciado dentro de ', container);
-}
+        _classCallCheck(this, ConfigInCharge);
 
-/*jshint unused:false*/
-;
+        this.container = container;
+        this.languagesLinkedInCharge = [];
+        this.posibleLanguages = [];
+
+        _modulesTranslateAPI.TranslateAPI.getLanguageInCharge().then(function (resp) {
+            _this5.languagesLinkedInCharge = resp;
+            _this5.addLanguage(_this5.languagesLinkedInCharge);
+            _this5.init();
+        }, function (error) {
+            console.log('Imposible cargar datos ', error);
+        });
+    }
+
+    /*jshint unused:false*/
+
+    _createClass(ConfigInCharge, [{
+        key: 'init',
+        value: function init() {
+            var _this6 = this;
+
+            //Events
+            $('#add-inCharge-btn').on('click', function (ev) {
+                _modulesTranslateAPI.TranslateAPI.getLanguages().then(function (resp) {
+                    _this6.posibleLanguages = resp;
+                    _modulesUtils.Utils.populateLanguageSelect(resp, $('#add-language-modal').find('select'));
+                    $('#add-language-modal').modal('show');
+                }, function (error) {
+                    //console.log('Imposible cargar datos ', error)
+                });
+            });
+
+            $('#accept-adding-language-btn').on('click', function (ev) {
+                _modulesTranslateAPI.TranslateAPI.getLanguageInCharge().then(function (resp) {
+                    _this6.languagesLinkedInCharge = resp;
+                    _this6.addLanguage(_this6.languagesLinkedInCharge);
+                }, function (error) {
+                    //console.log('Imposible cargar datos ', error)
+                });
+            });
+        }
+    }, {
+        key: 'addLanguage',
+        value: function addLanguage(array) {
+            var _this7 = this;
+
+            var count = 0;
+            $('.container-manage-select').find('form').empty();
+
+            var iteratorToDrawRows = function iteratorToDrawRows() {
+                $('.container-manage-select').find('form').append($('<div class="row row-language">').load('templates/idioma-responsable.html', function (tmpl, status) {
+                    if (status === 'success') {
+                        if (count === array.length - 1) {
+                            _this7.drawLanguagesIncharge(array[count]);
+                            return;
+                        } else {
+                            _this7.drawLanguagesIncharge(array[count]);
+                            count++;
+                            iteratorToDrawRows();
+                        }
+                    }
+                }));
+            };
+
+            iteratorToDrawRows();
+        }
+    }, {
+        key: 'drawLanguagesIncharge',
+        value: function drawLanguagesIncharge(obj) {
+            var str = obj.language.languageName;
+            $('.container-manage-select').find('.language-title').last().html(str);
+        }
+    }]);
+
+    return ConfigInCharge;
+})();
 
 exports.ConfigInCharge = ConfigInCharge;
 
@@ -676,7 +761,7 @@ exports.ConfigEnterprises = ConfigEnterprises;
 
 var SelectLanguages = (function () {
     function SelectLanguages(container) {
-        var _this5 = this;
+        var _this8 = this;
 
         _classCallCheck(this, SelectLanguages);
 
@@ -701,12 +786,12 @@ var SelectLanguages = (function () {
         $('delete-lang-btn').each(function (index, el) {
             $(el).on('DELETE_LANGUAGE', function (ev) {
                 console.log('click', ev.target.attributes);
-                _this5.deleteLang($(ev.target).attr('data-ind'));
+                _this8.deleteLang($(ev.target).attr('data-ind'));
             });
         });
 
         $('#confirmAddLanguageBtn').on('click', function (ev) {
-            _this5.addLang();
+            _this8.addLang();
         });
 
         DataBind.bind(this.wrap, this.languajesProvidersModel);
@@ -718,7 +803,6 @@ var SelectLanguages = (function () {
         key: 'deleteLang',
         value: function deleteLang(ind) {
             console.log('delete', ind);
-            //console.log('delete '+ this.languajesProvidersModel.relations[ind]);
         }
     }, {
         key: 'addLang',

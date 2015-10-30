@@ -42,6 +42,16 @@ export class Utils {
         let pLabels = ['Baja', 'Media', 'Alta'];
        return pLabels[num];
     }
+
+    static populateLanguageSelect(array, elem) {
+        elem.empty();
+        for (var i = 0; i < array.length; i++) {
+            let opt = document.createElement('option');
+            opt.innerHTML = array[i].languageName;
+            opt.value = array[i].id;
+            elem[0].appendChild(opt);
+        }
+    }
 }
 
 

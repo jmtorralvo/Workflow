@@ -13,15 +13,11 @@ from '../modules/utils';
 export class TransationsList {
     constructor() {
         this.model = undefined;
-        this.posibleInCharge = [];
         const wrap = $('#wrap-listado-traducciones');
-        
+
         TranslateAPI.getItems().then((resp) => {
             this.model = resp;
-            TranslateAPI.getPosibleInCharge().then((resp) => {
-                this.posibleInCharge = resp;
-                this.drawTables(this.model);
-            });
+            this.drawTables(this.model);
         });
     }
 
@@ -232,8 +228,67 @@ export class TransationsList {
 export class ConfigInCharge {
     constructor(container) {
         this.container = container;
-        console.log('Historial ha sido instanciado dentro de ', container);
+        this.languagesLinkedInCharge = [];
+        this.posibleLanguages = [];
 
+        TranslateAPI.getLanguageInCharge().then((resp) => {
+            this.languagesLinkedInCharge = resp;
+            this.addLanguage(this.languagesLinkedInCharge);
+            this.init();
+        }, (error) => {
+            console.log('Imposible cargar datos ', error);
+        });
+    }
+
+    init() {
+    
+        //Events
+        $('#add-inCharge-btn').on('click', (ev) => {
+            TranslateAPI.getLanguages().then((resp) => {
+                this.posibleLanguages = resp;
+                Utils.populateLanguageSelect(resp, $('#add-language-modal').find('select'));
+                $('#add-language-modal').modal('show');
+            }, (error) => {
+                //console.log('Imposible cargar datos ', error)
+            });
+        });
+
+        $('#accept-adding-language-btn').on('click', (ev) => {
+            TranslateAPI.getLanguageInCharge().then((resp) => {
+                this.languagesLinkedInCharge = resp;
+                this.addLanguage(this.languagesLinkedInCharge);
+            }, (error) => {
+                //console.log('Imposible cargar datos ', error)
+            });
+        });
+    }
+
+    addLanguage(array) {
+        let count = 0;
+        $('.container-manage-select').find('form').empty();
+
+        const iteratorToDrawRows = () => {
+            $('.container-manage-select').find('form').append($('<div class="row row-language">')
+                .load('templates/idioma-responsable.html', (tmpl, status) => {
+                    if (status === 'success') {
+                        if (count === array.length - 1) {
+                            this.drawLanguagesIncharge(array[count]);
+                            return;
+                        } else {
+                            this.drawLanguagesIncharge(array[count]);
+                            count++;
+                            iteratorToDrawRows();
+                        }
+                    }
+                }));
+        };
+
+        iteratorToDrawRows();
+    }
+
+    drawLanguagesIncharge(obj) {
+        let str = obj.language.languageName;
+        $('.container-manage-select').find('.language-title').last().html(str);
     }
 }
 
@@ -282,7 +337,6 @@ export class SelectLanguages {
 
     deleteLang(ind) {
         console.log('delete', ind);
-        //console.log('delete '+ this.languajesProvidersModel.relations[ind]);
     }
 
     addLang() {

@@ -27,9 +27,16 @@ export class TranslateAPI extends AjaxRequest {
          });*/
     }
 
-    static getPosibleInCharge() {
+    static getLanguageInCharge() {
         return super.get({
-            url: './mocks/posible-in-charge.json'
+            url: './mocks/language-inCharge-array.json'
+        });
+    }
+
+
+    static getLanguages() {
+        return super.get({
+            url: './mocks/languages-array.json'
         });
     }
 
@@ -40,3 +47,4 @@ export class TranslateAPI extends AjaxRequest {
         });*/
     }
 }
+
