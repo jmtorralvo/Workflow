@@ -271,10 +271,8 @@ var Utils = (function () {
             elem.empty();
             for (var i = 0; i < array.length; i++) {
                 var opt = document.createElement('option');
-                console.log(propName);
                 opt.innerHTML = array[i][propName];
                 opt.value = array[i].id;
-                console.log(elem);
                 elem[0].appendChild(opt);
             }
         }
@@ -840,10 +838,14 @@ var ConfigProviders = (function () {
         this.posibleProviders = [];
         this.posibleLanguages = [];
 
-        _modulesTranslateAPI.TranslateAPI.getProvidersInCharge().then(function (resp) {
-            _this10.providersLinkedInCharge = resp;
-            _this10.renderProviders(_this10.providersLinkedInCharge);
-            _this10.configEvents();
+        _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (respProv) {
+            _this10.posibleProviders = respProv;
+
+            _modulesTranslateAPI.TranslateAPI.getProvidersInCharge().then(function (resp) {
+                _this10.providersLinkedInCharge = resp;
+                _this10.renderProviders(_this10.providersLinkedInCharge);
+                _this10.configEvents();
+            });
         });
     }
 
@@ -893,8 +895,26 @@ var ConfigProviders = (function () {
             $('.container-manage-select').find('form').empty();
 
             var drawLanguagesIncharge = function drawLanguagesIncharge(obj) {
+                console.log(obj);
+                $('.container-manage-select').find('.row-language').last().attr('row-id', obj.id);
                 $('.container-manage-select').find('.language-title').last().html(obj.language.languageName);
-                $('.container-manage-select').find('input').last().val(obj.provider.providerName);
+                _modulesUtils.Utils.populateSelect(_this13.posibleProviders, $('.container-manage-select').find('.provider-select').last(), 'providerName');
+                $('.container-manage-select').find('.provider-select').last().val(obj.provider.id);
+                $('.container-manage-select').find('.provider-select').last().on('change', function (ev) {
+                    //console.log( $(this).parent().parent().attr('row-id') );
+                    var obj = {
+                        id: $(this).parent().parent().attr('row-id'),
+                        newProvider: this.value
+                    };
+                    this.changeProviderRow(obj);
+                });
+
+                /*$('.container-manage-select').find('.language-title').last().attr('data-key', 'model[' + count + '].language.languageName');
+                $('.container-manage-select').find('.provider-select').last().attr('data-key', 'model[' + count + '].provider.id');
+                $('.container-manage-select').find('.provider-select').last().on('change', function(ev){
+                    console.log('fooModel', fooModel);
+                });
+                DataBind.bind(this.container, fooModel);*/
             };
 
             var iteratorToDrawRows = function iteratorToDrawRows() {
@@ -928,14 +948,26 @@ var ConfigProviders = (function () {
             });
         }
     }, {
-        key: 'postNewRow',
-        value: function postNewRow(obj) {
+        key: 'changeProviderRow',
+        value: function changeProviderRow(obj) {
             var _this15 = this;
 
             _modulesTranslateAPI.TranslateAPI.addProvider(obj).then(function (resp) {
                 _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (resp) {
                     _this15.providersLinkedInCharge = resp;
                     _this15.renderProviders(_this15.providersLinkedInCharge);
+                });
+            });
+        }
+    }, {
+        key: 'postNewRow',
+        value: function postNewRow(obj) {
+            var _this16 = this;
+
+            _modulesTranslateAPI.TranslateAPI.addProvider(obj).then(function (resp) {
+                _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (resp) {
+                    _this16.providersLinkedInCharge = resp;
+                    _this16.renderProviders(_this16.providersLinkedInCharge);
                 });
             });
         }
@@ -953,7 +985,7 @@ exports.ConfigProviders = ConfigProviders;
 
 var SelectLanguages = (function () {
     function SelectLanguages(container) {
-        var _this16 = this;
+        var _this17 = this;
 
         _classCallCheck(this, SelectLanguages);
 
@@ -978,12 +1010,12 @@ var SelectLanguages = (function () {
         $('delete-lang-btn').each(function (index, el) {
             $(el).on('DELETE_LANGUAGE', function (ev) {
                 console.log('click', ev.target.attributes);
-                _this16.deleteLang($(ev.target).attr('data-ind'));
+                _this17.deleteLang($(ev.target).attr('data-ind'));
             });
         });
 
         $('#confirmAddLanguageBtn').on('click', function (ev) {
-            _this16.addLang();
+            _this17.addLang();
         });
 
         DataBind.bind(this.wrap, this.languajesProvidersModel);

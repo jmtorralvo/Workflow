@@ -47,10 +47,8 @@ export class Utils {
         elem.empty();
         for (var i = 0; i < array.length; i++) {
             let opt = document.createElement('option');
-            console.log(propName);
             opt.innerHTML = array[i][propName];
             opt.value = array[i].id;
-            console.log(elem);
             elem[0].appendChild(opt);
         }
     }

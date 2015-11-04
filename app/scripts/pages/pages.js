@@ -319,6 +319,7 @@ export class ConfigInCharge {
 }
 
 
+
 export class ConfigProviders {
     constructor(container) {
         this.container = container;
@@ -326,10 +327,14 @@ export class ConfigProviders {
         this.posibleProviders = [];
         this.posibleLanguages = [];
 
-        TranslateAPI.getProvidersInCharge().then((resp) => {
-            this.providersLinkedInCharge = resp;
-            this.renderProviders(this.providersLinkedInCharge);
-            this.configEvents();
+        TranslateAPI.getAllProviders().then((respProv) => {
+            this.posibleProviders = respProv;
+
+            TranslateAPI.getProvidersInCharge().then((resp) => {
+                this.providersLinkedInCharge = resp;
+                this.renderProviders(this.providersLinkedInCharge);
+                this.configEvents();
+            });
         });
     }
 
@@ -368,8 +373,27 @@ export class ConfigProviders {
         $('.container-manage-select').find('form').empty();
 
         const drawLanguagesIncharge = (obj) => {
+            console.log(obj);
+            $('.container-manage-select').find('.row-language').last().attr('row-id', obj.id);
             $('.container-manage-select').find('.language-title').last().html(obj.language.languageName);
-            $('.container-manage-select').find('input').last().val(obj.provider.providerName);
+            Utils.populateSelect(this.posibleProviders, $('.container-manage-select').find('.provider-select').last(), 'providerName');
+            $('.container-manage-select').find('.provider-select').last().val(obj.provider.id);
+            $('.container-manage-select').find('.provider-select').last().on('change', function(ev) {
+                //console.log( $(this).parent().parent().attr('row-id') );
+                let obj = {
+                    id : $(this).parent().parent().attr('row-id'),
+                    newProvider : this.value
+                };
+                this.changeProviderRow(obj);
+            });
+
+
+            /*$('.container-manage-select').find('.language-title').last().attr('data-key', 'model[' + count + '].language.languageName');
+            $('.container-manage-select').find('.provider-select').last().attr('data-key', 'model[' + count + '].provider.id');
+            $('.container-manage-select').find('.provider-select').last().on('change', function(ev){
+                console.log('fooModel', fooModel);
+            });
+            DataBind.bind(this.container, fooModel);*/
         };
 
         const iteratorToDrawRows = () => {
@@ -397,6 +421,15 @@ export class ConfigProviders {
             $(el).attr('data-ind', index);
             $(el).on('DELETE_PROVIDER', (ev) => {
                 this.deleteLang($(ev.target).attr('data-ind'));
+            });
+        });
+    }
+
+    changeProviderRow(obj){
+        TranslateAPI.addProvider(obj).then((resp) => {
+            TranslateAPI.getAllProviders().then((resp) => {
+                this.providersLinkedInCharge = resp;
+                this.renderProviders(this.providersLinkedInCharge);
             });
         });
     }
