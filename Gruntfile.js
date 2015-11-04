@@ -25,8 +25,11 @@ module.exports = function(grunt) {
 
     // Configurable paths
     var config = {
+        host: 'localhost',
+        port : LIVERELOAD_PORT,
         app: 'app',
-        dist: 'dist'
+        dist: 'dist',
+        mocks: 'app/mocks'
     };
 
     // Define the configuration for all the tasks
@@ -80,6 +83,7 @@ module.exports = function(grunt) {
             }
         },
 
+
         browserSync: {
             options: {
                 notify: false,
@@ -107,7 +111,7 @@ module.exports = function(grunt) {
                     port: LIVERELOAD_PORT_TEST,
                     open: false,
                     logLevel: 'silent',
-                    host: 'localhost',
+                    host: '<%= config.host %>',
                     server: {
                         baseDir: ['.tmp', './test', config.app],
                         routes: {
@@ -435,6 +439,26 @@ module.exports = function(grunt) {
                 'imagemin',
                 'svgmin'
             ]
+        },
+
+        // simulate with mocks API behaviour.
+        stubby: {
+            stubsServer: {
+                options: {
+                    location: '<%= config.host %>',
+                     admin: 8899,
+                    tls: 7453,
+                    stubs: 8892,
+                    relativeFilesPath: true
+                },
+                files: [{
+                    src: [
+                        '<%= config.app %>/mocks/*.json',
+                        '!<%= config.app %>/mocks/responses-stubby/*.json',
+                        '!<%= config.app %>/mocks/getJsons/*.json'
+                    ]
+                }]
+            }
         }
     });
 
@@ -451,8 +475,9 @@ module.exports = function(grunt) {
             'browserify',
             'concurrent:server',
             'postcss',
-            'jshint',
             'browserSync:livereload',
+            'stubby',
+            'jshint',
             'watch'
         ]);
     });

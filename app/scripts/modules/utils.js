@@ -43,12 +43,14 @@ export class Utils {
         return pLabels[num];
     }
 
-    static populateLanguageSelect(array, elem) {
+    static populateSelect(array, elem, propName) {
         elem.empty();
         for (var i = 0; i < array.length; i++) {
             let opt = document.createElement('option');
-            opt.innerHTML = array[i].languageName;
+            console.log(propName);
+            opt.innerHTML = array[i][propName];
             opt.value = array[i].id;
+            console.log(elem);
             elem[0].appendChild(opt);
         }
     }

@@ -6,7 +6,8 @@
     "requirejs": "~2.1.20",
     "bootstrap-less": "~3.3.4",
     "jquery": "~2.1.4",
-    "bootstrap-table": "~1.9.1"
+    "bootstrap-table": "~1.9.1",
+    "stubby": "~0.0.5"
   },
   "overrides": {
     "bootstrap-sass": {

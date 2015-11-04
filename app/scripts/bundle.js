@@ -60,7 +60,7 @@ var AjaxRequest = (function () {
 
             return $.ajax({
                 method: 'POST',
-                dataType: "json",
+                dataType: 'json',
                 url: peticionConfig.url,
                 data: peticionConfig.params
             });
@@ -138,7 +138,7 @@ var TranslateAPI = (function (_AjaxRequest) {
             /* let req = new AjaxRequest(); 
              return req.get(obj);*/
             return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
-                url: './mocks/list-trad.json'
+                url: './mocks/getJsons/list-trad.json'
             });
         }
     }, {
@@ -152,22 +152,44 @@ var TranslateAPI = (function (_AjaxRequest) {
         key: 'getLanguageInCharge',
         value: function getLanguageInCharge() {
             return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
-                url: './mocks/language-inCharge-array.json'
+                url: './mocks/getJsons/language-inCharge-array.json'
+            });
+        }
+    }, {
+        key: 'getProvidersInCharge',
+        value: function getProvidersInCharge() {
+            return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
+                url: './mocks/getJsons/providers-inCharge-array.json'
+            });
+        }
+    }, {
+        key: 'getAllProviders',
+        value: function getAllProviders() {
+            return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
+                url: './mocks/getJsons/providers-array.json'
             });
         }
     }, {
         key: 'getAllLanguages',
         value: function getAllLanguages() {
             return _get(Object.getPrototypeOf(TranslateAPI), 'get', this).call(this, {
-                url: './mocks/languages-array.json'
+                url: './mocks/getJsons/languages-array.json'
             });
         }
     }, {
         key: 'addLanguageAndPersonInCharge',
         value: function addLanguageAndPersonInCharge(obj) {
             return _get(Object.getPrototypeOf(TranslateAPI), 'post', this).call(this, {
-                url: './API/addLanguageAndPersonInCharge',
-                params: obj
+                url: '/service/addLanguageAndPersonInCharge',
+                data: obj
+            });
+        }
+    }, {
+        key: 'addProvider',
+        value: function addProvider(obj) {
+            return _get(Object.getPrototypeOf(TranslateAPI), 'post', this).call(this, {
+                url: '/service/addProvider',
+                data: obj
             });
         }
     }, {
@@ -244,13 +266,15 @@ var Utils = (function () {
             return pLabels[num];
         }
     }, {
-        key: 'populateLanguageSelect',
-        value: function populateLanguageSelect(array, elem) {
+        key: 'populateSelect',
+        value: function populateSelect(array, elem, propName) {
             elem.empty();
             for (var i = 0; i < array.length; i++) {
                 var opt = document.createElement('option');
-                opt.innerHTML = array[i].languageName;
+                console.log(propName);
+                opt.innerHTML = array[i][propName];
                 opt.value = array[i].id;
+                console.log(elem);
                 elem[0].appendChild(opt);
             }
         }
@@ -403,8 +427,8 @@ var WorkflowApp = (function () {
             if (newState === 'configurar-responsables') {
                 this.currentSec = new pages.ConfigInCharge($('#section-view'));
             }
-            if (newState === 'config-empresas') {
-                this.currentSec = new pages.ConfigEnterprises($('#section-view'));
+            if (newState === 'config-proveedores') {
+                this.currentSec = new pages.ConfigProviders($('#section-view'));
             }
             if (newState === 'select-idioma-empresa') {
                 this.currentSec = new pages.SelectLanguages($('#section-view'));
@@ -473,79 +497,19 @@ var TransationsList = (function () {
         _modulesTranslateAPI.TranslateAPI.getTranslationItems().then(function (resp) {
             _this.model = resp;
             _this.drawTables(_this.model);
+            _this.configEvents();
         });
     }
 
     _createClass(TransationsList, [{
-        key: 'drawTables',
-        value: function drawTables(resp) {
+        key: 'configEvents',
+        value: function configEvents() {
             var _this2 = this;
-
-            $('#translate-table').bootstrapTable({
-                data: resp.items,
-                search: false,
-                onClickCell: function onClickCell(field, value, row, element) {
-                    if (field !== 'inCharge') {
-                        _this2.displayDetails(field, value, row, element);
-                    }
-                },
-                columns: [{
-                    field: 'id',
-                    title: 'Id'
-                }, {
-                    field: 'page',
-                    title: 'Página',
-                    sortable: true
-                }, {
-                    field: 'demandBy',
-                    title: 'Solicitado por',
-                    sortable: true
-                }, {
-                    field: 'uri',
-                    title: 'Código URI',
-                    formatter: function formatter(value, row, index) {
-                        return '<a href="' + value + '" target="_blank">link</a>';
-                    }
-                }, {
-                    field: 'originalLanguage',
-                    title: 'Idioma origen',
-                    sortable: true
-                }, {
-                    field: 'destinationLanguage',
-                    title: 'Idioma destino',
-                    sortable: true
-                }, {
-                    field: 'currentState',
-                    title: 'Estado',
-                    sortable: true
-                }, {
-                    field: 'priority',
-                    title: 'Prioridad',
-                    sortable: true,
-                    formatter: function formatter(value, row, index) {
-                        return _modulesUtils.Utils.getPriorityLabel(value);
-                    }
-                }, {
-                    field: 'mode',
-                    title: 'Modo',
-                    sortable: true
-                }, {
-                    field: 'initialDate',
-                    title: 'Fecha Inicio',
-                    sortable: true
-                }]
-            });
-            this.init();
-        }
-    }, {
-        key: 'init',
-        value: function init() {
-            var _this3 = this;
 
             /// Event Export
             $('.btnExport').on('click', function (ev) {
                 $('#translate-table-to-export').bootstrapTable({
-                    data: _this3.model.items,
+                    data: _this2.model.items,
                     columns: [{
                         field: 'id',
                         title: 'Id'
@@ -598,11 +562,6 @@ var TransationsList = (function () {
                 _modulesUtils.Utils.exportExcel('Listado detalle traducciones ' + _modulesUtils.Utils.getCurrentDate(), [$('#translate-table-detail'), $('#translate-table-historical'), $('#translate-table-comments')], ev, '<div class="row margin-bottom-lg"><div class="col-xs-12"><h2>Detalle Traducción</h2></div></div>');
             });
 
-            // Event change person in charge
-            $('select').on('change', function (ev) {
-                _this3.render();
-            });
-
             //Filter
             $('#filter-translations').keyup(function () {
                 var rex = new RegExp($(this).val(), 'i');
@@ -610,6 +569,66 @@ var TransationsList = (function () {
                 $('.searchable tr').filter(function () {
                     return rex.test($(this).text());
                 }).show();
+            });
+        }
+    }, {
+        key: 'drawTables',
+        value: function drawTables(resp) {
+            var _this3 = this;
+
+            $('#translate-table').bootstrapTable({
+                data: resp.items,
+                search: false,
+                onClickCell: function onClickCell(field, value, row, element) {
+                    if (field !== 'inCharge') {
+                        _this3.displayDetails(field, value, row, element);
+                    }
+                },
+                columns: [{
+                    field: 'id',
+                    title: 'Id'
+                }, {
+                    field: 'page',
+                    title: 'Página',
+                    sortable: true
+                }, {
+                    field: 'demandBy',
+                    title: 'Solicitado por',
+                    sortable: true
+                }, {
+                    field: 'uri',
+                    title: 'Código URI',
+                    formatter: function formatter(value, row, index) {
+                        return '<a href="' + value + '" target="_blank">link</a>';
+                    }
+                }, {
+                    field: 'originalLanguage',
+                    title: 'Idioma origen',
+                    sortable: true
+                }, {
+                    field: 'destinationLanguage',
+                    title: 'Idioma destino',
+                    sortable: true
+                }, {
+                    field: 'currentState',
+                    title: 'Estado',
+                    sortable: true
+                }, {
+                    field: 'priority',
+                    title: 'Prioridad',
+                    sortable: true,
+                    formatter: function formatter(value, row, index) {
+                        return _modulesUtils.Utils.getPriorityLabel(value);
+                    }
+                }, {
+                    field: 'mode',
+                    title: 'Modo',
+                    sortable: true
+                }, {
+                    field: 'initialDate',
+                    title: 'Fecha Inicio',
+                    sortable: true
+                }]
             });
         }
     }, {
@@ -704,33 +723,28 @@ var ConfigInCharge = (function () {
         _modulesTranslateAPI.TranslateAPI.getLanguageInCharge().then(function (resp) {
             _this5.languagesLinkedInCharge = resp;
             _this5.renderLanguages(_this5.languagesLinkedInCharge);
-            _this5.init();
-        }, function (error) {
-            console.log('Imposible cargar datos ', error);
+            _this5.configEvents();
         });
     }
 
     _createClass(ConfigInCharge, [{
-        key: 'init',
-        value: function init() {
+        key: 'configEvents',
+        value: function configEvents() {
             var _this6 = this;
 
-            //Events
             $('#add-inCharge-btn').on('click', function (ev) {
                 _modulesTranslateAPI.TranslateAPI.getAllLanguages().then(function (resp) {
                     _this6.posibleLanguages = resp;
-                    _modulesUtils.Utils.populateLanguageSelect(resp, $('#add-language-modal').find('select'));
+                    _modulesUtils.Utils.populateSelect(resp, $('#add-language-modal').find('.language-select'), 'languageName');
                     $('#add-language-modal').find('#email-inCharge-modal').val('');
                     $('#add-language-modal').modal('show');
-                }, function (error) {
-                    //console.log('Imposible cargar datos ', error)
                 });
             });
 
             $('#accept-adding-language-btn').on('click', function (ev) {
                 if (_modulesUtils.Utils.validateEmail($('#email-inCharge-modal').val()) === true) {
                     var objToPost = {
-                        id: $('#add-language-modal').find('select').val(),
+                        id: $('#add-language-modal').find('.language-select').val(),
                         inCharge: $('#add-language-modal').find('#email-inCharge-modal').val()
                     };
                     _this6.postNewRow(objToPost);
@@ -745,21 +759,20 @@ var ConfigInCharge = (function () {
                 }
             });
         }
-    }, {
-        key: 'postNewRow',
-        value: function postNewRow(obj) {
-            _modulesTranslateAPI.TranslateAPI.addLanguageAndPersonInCharge(obj).then(function (resp) {}, function (error) {});
-            $('#add-language-modal').modal('hide');
-        }
+
+        //SRV
     }, {
         key: 'renderLanguages',
         value: function renderLanguages(array) {
+            var _this7 = this;
+
             var count = 0;
+            $('#add-language-modal').modal('hide');
             $('.container-manage-select').find('form').empty();
 
             var drawLanguagesIncharge = function drawLanguagesIncharge(obj) {
-                var str = obj.language.languageName;
-                $('.container-manage-select').find('.language-title').last().html(str);
+                $('.container-manage-select').find('.language-title').last().html(obj.language.languageName);
+                $('.container-manage-select').find('input').last().val(obj.inCharge);
             };
 
             var iteratorToDrawRows = function iteratorToDrawRows() {
@@ -767,6 +780,7 @@ var ConfigInCharge = (function () {
                     if (status === 'success') {
                         if (count === array.length - 1) {
                             drawLanguagesIncharge(array[count]);
+                            _this7.setEventToDeleteBtns();
                             return;
                         } else {
                             drawLanguagesIncharge(array[count]);
@@ -779,6 +793,35 @@ var ConfigInCharge = (function () {
 
             iteratorToDrawRows();
         }
+    }, {
+        key: 'postNewRow',
+        value: function postNewRow(obj) {
+            var _this8 = this;
+
+            _modulesTranslateAPI.TranslateAPI.addLanguageAndPersonInCharge(obj).then(function (resp) {
+                _modulesTranslateAPI.TranslateAPI.getLanguageInCharge().then(function (resp) {
+                    _this8.languagesLinkedInCharge = resp;
+                    _this8.renderLanguages(_this8.languagesLinkedInCharge);
+                });
+            });
+        }
+    }, {
+        key: 'setEventToDeleteBtns',
+        value: function setEventToDeleteBtns() {
+            var _this9 = this;
+
+            $('delete-lang-btn').each(function (index, el) {
+                $(el).attr('data-ind', index);
+                $(el).on('DELETE_LANGUAGE', function (ev) {
+                    _this9.deleteLang($(ev.target).attr('data-ind'));
+                });
+            });
+        }
+    }, {
+        key: 'deleteLang',
+        value: function deleteLang(ind) {
+            console.log('delete', ind);
+        }
     }]);
 
     return ConfigInCharge;
@@ -786,15 +829,131 @@ var ConfigInCharge = (function () {
 
 exports.ConfigInCharge = ConfigInCharge;
 
-var ConfigEnterprises = function ConfigEnterprises(container) {
-    _classCallCheck(this, ConfigEnterprises);
-};
+var ConfigProviders = (function () {
+    function ConfigProviders(container) {
+        var _this10 = this;
 
-exports.ConfigEnterprises = ConfigEnterprises;
+        _classCallCheck(this, ConfigProviders);
+
+        this.container = container;
+        this.providersLinkedInCharge = [];
+        this.posibleProviders = [];
+        this.posibleLanguages = [];
+
+        _modulesTranslateAPI.TranslateAPI.getProvidersInCharge().then(function (resp) {
+            _this10.providersLinkedInCharge = resp;
+            _this10.renderProviders(_this10.providersLinkedInCharge);
+            _this10.configEvents();
+        });
+    }
+
+    _createClass(ConfigProviders, [{
+        key: 'configEvents',
+        value: function configEvents() {
+            var _this11 = this;
+
+            $('#add-provider-btn').on('click', function (ev) {
+                _this11.openModal();
+            });
+
+            $('#accept-adding-provider-btn').on('click', function (ev) {
+                var objToPost = {
+                    id: $('#add-provider-modal').find('.language-select').val(),
+                    inCharge: $('#add-provider-modal').find('.provider-select').val()
+                };
+                console.log('objToPost', objToPost);
+                _this11.postNewRow(objToPost);
+            });
+        }
+    }, {
+        key: 'openModal',
+        value: function openModal() {
+            var _this12 = this;
+
+            _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (respProv) {
+                _this12.posibleProviders = respProv;
+                _modulesUtils.Utils.populateSelect(respProv, $('#add-provider-modal').find('.provider-select'), 'providerName');
+
+                _modulesTranslateAPI.TranslateAPI.getAllLanguages().then(function (respLang) {
+                    _this12.posibleLanguages = respLang;
+                    _modulesUtils.Utils.populateSelect(respLang, $('#add-provider-modal').find('.language-select'), 'languageName');
+                    $('#add-provider-modal').modal('show');
+                });
+            });
+        }
+
+        //SRV
+    }, {
+        key: 'renderProviders',
+        value: function renderProviders(array) {
+            var _this13 = this;
+
+            var count = 0;
+            $('#add-provider-modal').modal('hide');
+            $('.container-manage-select').find('form').empty();
+
+            var drawLanguagesIncharge = function drawLanguagesIncharge(obj) {
+                $('.container-manage-select').find('.language-title').last().html(obj.language.languageName);
+                $('.container-manage-select').find('input').last().val(obj.provider.providerName);
+            };
+
+            var iteratorToDrawRows = function iteratorToDrawRows() {
+                $('.container-manage-select').find('form').append($('<div class="row row-language">').load('templates/idioma-proveedor.html', function (tmpl, status) {
+                    if (status === 'success') {
+                        if (count === array.length - 1) {
+                            drawLanguagesIncharge(array[count]);
+                            _this13.setEventToDeleteBtns();
+                            return;
+                        } else {
+                            drawLanguagesIncharge(array[count]);
+                            count++;
+                            iteratorToDrawRows();
+                        }
+                    }
+                }));
+            };
+
+            iteratorToDrawRows();
+        }
+    }, {
+        key: 'setEventToDeleteBtns',
+        value: function setEventToDeleteBtns() {
+            var _this14 = this;
+
+            $('delete-lang-btn').each(function (index, el) {
+                $(el).attr('data-ind', index);
+                $(el).on('DELETE_PROVIDER', function (ev) {
+                    _this14.deleteLang($(ev.target).attr('data-ind'));
+                });
+            });
+        }
+    }, {
+        key: 'postNewRow',
+        value: function postNewRow(obj) {
+            var _this15 = this;
+
+            _modulesTranslateAPI.TranslateAPI.addProvider(obj).then(function (resp) {
+                _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (resp) {
+                    _this15.providersLinkedInCharge = resp;
+                    _this15.renderProviders(_this15.providersLinkedInCharge);
+                });
+            });
+        }
+    }, {
+        key: 'deleteLang',
+        value: function deleteLang(ind) {
+            console.log('delete', ind);
+        }
+    }]);
+
+    return ConfigProviders;
+})();
+
+exports.ConfigProviders = ConfigProviders;
 
 var SelectLanguages = (function () {
     function SelectLanguages(container) {
-        var _this7 = this;
+        var _this16 = this;
 
         _classCallCheck(this, SelectLanguages);
 
@@ -819,12 +978,12 @@ var SelectLanguages = (function () {
         $('delete-lang-btn').each(function (index, el) {
             $(el).on('DELETE_LANGUAGE', function (ev) {
                 console.log('click', ev.target.attributes);
-                _this7.deleteLang($(ev.target).attr('data-ind'));
+                _this16.deleteLang($(ev.target).attr('data-ind'));
             });
         });
 
         $('#confirmAddLanguageBtn').on('click', function (ev) {
-            _this7.addLang();
+            _this16.addLang();
         });
 
         DataBind.bind(this.wrap, this.languajesProvidersModel);

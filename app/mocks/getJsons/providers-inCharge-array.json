@@ -1,0 +1,31 @@
+[{
+    "language": {
+        "id": "1",
+        "languageName": "Inglés"
+    },
+    "provider": {
+        "id": "1",
+        "providerName": "Quest"
+    },
+    "id": ""
+}, {
+    "language": {
+        "id": "4",
+        "languageName": "Portugués"
+    },
+    "provider": {
+        "id": "3",
+        "providerName": "Prolingua"
+    },
+    "id": ""
+}, {
+    "language": {
+        "id": "7",
+        "languageName": "Ruso"
+    },
+    "provider": {
+        "id": "1",
+        "providerName": "Quest"
+    },
+    "id": ""
+}]

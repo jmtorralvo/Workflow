@@ -30,7 +30,7 @@ export class AjaxRequest {
 
         return $.ajax({
             method: 'POST',
-            dataType: "json",
+            dataType: 'json',
             url: peticionConfig.url,
             data: peticionConfig.params
         });

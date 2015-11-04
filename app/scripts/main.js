@@ -12,3 +12,4 @@ var app = new WorkflowApp($('#section-view'), $('#workflow-navbar'));
 
 /*var myModel = {};
 DataBind.bind($('#section-view'), myModel);*/
+ 

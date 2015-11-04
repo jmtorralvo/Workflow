@@ -41,8 +41,8 @@ export class WorkflowApp {
          if (newState === 'configurar-responsables'){
             this.currentSec = new pages.ConfigInCharge($('#section-view'));
         }
-        if (newState === 'config-empresas'){
-            this.currentSec = new pages.ConfigEnterprises($('#section-view'));
+        if (newState === 'config-proveedores'){
+            this.currentSec = new pages.ConfigProviders($('#section-view'));
         }
         if (newState === 'select-idioma-empresa'){
             this.currentSec = new pages.SelectLanguages($('#section-view'));

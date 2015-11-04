@@ -1,0 +1,27 @@
+[{
+    "request": {
+        "url": "^/service/addLanguageAndPersonInCharge$",
+        "method": "POST"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "latency": 500,
+        "file": "responses-stubby/foo.json"
+    }
+},{
+    "request": {
+        "url": "^/services/cpp/customerdataform/step1$",
+        "method": "POST"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "latency": 500,
+        "file": "responses-stubby/foo.json"
+    }
+}]

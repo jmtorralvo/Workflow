@@ -1,14 +1,14 @@
-<div id="container-configurar-reponsables">
+<div id="container-configurar-proveedores">
     <div class="row">
-        <div id="wrap-configurar-reponsables" class="col-xs-12">
+        <div id="wrap-configurar-proveedores" class="col-xs-12">
             <div class="row margin-bottom-lg">
                 <div class="col-xs-12">
-                    <h2 class="section-title">Configuración responsables idioma</h2>
+                    <h2 class="section-title">Configuración proveedores</h2>
                 </div>
             </div>
             <div class="row margin-bottom-lg">
                 <div class="col-xs-12">
-                    <button type="button" id="add-inCharge-btn" class="btn btn-primary" data-dismiss="modal">Agregar Idioma</button>
+                    <button type="button" id="add-provider-btn" class="btn btn-primary" data-dismiss="modal">Agregar Proveedor</button>
                 </div>
             </div>
             <div class="row">
@@ -21,7 +21,7 @@
         </div>
     </div>
     <!--Modal-->
-    <div class="modal fade" id="add-language-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="add-provider-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -36,14 +36,16 @@
                                 </select>
                             </div>
                             <div class="col-xs-6">
-                                <input type="text" class="form-control" id="email-inCharge-modal" placeholder="Insertar email del responsable...">
-                                <span class="alert-msg">El formato del email es incorrecto</span>
+                                <select class="provider-select form-control">
+                                </select>
+                                <!-- <input type="text" class="form-control" id="email-inCharge-modal" placeholder="Insertar email del responsable...">
+                                <span class="alert-msg">El formato del email es incorrecto</span> -->
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="accept-adding-language-btn" class="btn btn-primary">Aceptar</button>
+                    <button type="button" id="accept-adding-provider-btn" class="btn btn-primary">Aceptar</button>
                 </div>
             </div>
         </div>

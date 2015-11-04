@@ -17,7 +17,7 @@ export class TranslateAPI extends AjaxRequest {
         /* let req = new AjaxRequest(); 
          return req.get(obj);*/
         return super.get({
-            url: './mocks/list-trad.json'
+            url: './mocks/getJsons/list-trad.json'
         });
     }
 
@@ -29,21 +29,39 @@ export class TranslateAPI extends AjaxRequest {
 
     static getLanguageInCharge() {
         return super.get({
-            url: './mocks/language-inCharge-array.json'
+            url: './mocks/getJsons/language-inCharge-array.json'
         });
     }
 
+     static getProvidersInCharge() {
+        return super.get({
+            url: './mocks/getJsons/providers-inCharge-array.json'
+        });
+    }
+
+    static getAllProviders() {
+        return super.get({
+            url: './mocks/getJsons/providers-array.json'
+        });
+    }
 
     static getAllLanguages() {
         return super.get({
-            url: './mocks/languages-array.json'
+            url: './mocks/getJsons/languages-array.json'
         });
     }
 
-    static addLanguageAndPersonInCharge(obj){
+    static addLanguageAndPersonInCharge(obj) {
         return super.post({
-            url: './API/addLanguageAndPersonInCharge',
-            params : obj
+            url: '/service/addLanguageAndPersonInCharge',
+            data : obj
+        });
+    }
+
+    static addProvider(obj) {
+        return super.post({
+            url: '/service/addProvider',
+            data : obj
         });
     }
 
