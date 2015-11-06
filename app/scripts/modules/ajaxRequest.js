@@ -14,8 +14,7 @@ export class AjaxRequest {
         peticionConfig = $.extend({}, peticionConfig, config);
         return $.ajax({
             method: 'GET',
-            url: peticionConfig.url,
-            params: peticionConfig.params
+            url: peticionConfig.url
         });
     }
 
@@ -43,11 +42,12 @@ export class AjaxRequest {
             timeout: null
         };
         peticionConfig = $.extend({}, peticionConfig, config);
+        peticionConfig.params = JSON.stringify(peticionConfig.params ); 
 
         return $.ajax({
             method: 'PUT',
             url: peticionConfig.url,
-            params: peticionConfig.params
+            data: peticionConfig.params
         });
     }
 
@@ -61,8 +61,7 @@ export class AjaxRequest {
 
         return $.ajax({
             method: 'DELETE',
-            url: peticionConfig.url,
-            params: peticionConfig.params
+            url: peticionConfig.url
         });
     }
 }

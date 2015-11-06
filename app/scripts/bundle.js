@@ -43,8 +43,7 @@ var AjaxRequest = (function () {
             peticionConfig = $.extend({}, peticionConfig, config);
             return $.ajax({
                 method: 'GET',
-                url: peticionConfig.url,
-                params: peticionConfig.params
+                url: peticionConfig.url
             });
         }
     }, {
@@ -74,11 +73,12 @@ var AjaxRequest = (function () {
                 timeout: null
             };
             peticionConfig = $.extend({}, peticionConfig, config);
+            peticionConfig.params = JSON.stringify(peticionConfig.params);
 
             return $.ajax({
                 method: 'PUT',
                 url: peticionConfig.url,
-                params: peticionConfig.params
+                data: peticionConfig.params
             });
         }
     }, {
@@ -93,8 +93,7 @@ var AjaxRequest = (function () {
 
             return $.ajax({
                 method: 'DELETE',
-                url: peticionConfig.url,
-                params: peticionConfig.params
+                url: peticionConfig.url
             });
         }
     }]);
@@ -181,7 +180,7 @@ var TranslateAPI = (function (_AjaxRequest) {
         value: function addLanguageAndPersonInCharge(obj) {
             return _get(Object.getPrototypeOf(TranslateAPI), 'post', this).call(this, {
                 url: '/service/addLanguageAndPersonInCharge',
-                data: obj
+                params: obj
             });
         }
     }, {
@@ -189,7 +188,15 @@ var TranslateAPI = (function (_AjaxRequest) {
         value: function addProvider(obj) {
             return _get(Object.getPrototypeOf(TranslateAPI), 'post', this).call(this, {
                 url: '/service/addProvider',
-                data: obj
+                params: obj
+            });
+        }
+    }, {
+        key: 'modifyProvider',
+        value: function modifyProvider(obj) {
+            return _get(Object.getPrototypeOf(TranslateAPI), 'put', this).call(this, {
+                url: '/service/modifyProvider',
+                params: obj
             });
         }
     }, {
@@ -310,16 +317,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var DeleteLangBtn = (function (_HTMLElement) {
-    _inherits(DeleteLangBtn, _HTMLElement);
+var CustomBtn = (function (_HTMLElement) {
+    _inherits(CustomBtn, _HTMLElement);
 
-    function DeleteLangBtn() {
-        _classCallCheck(this, DeleteLangBtn);
+    function CustomBtn() {
+        _classCallCheck(this, CustomBtn);
 
-        _get(Object.getPrototypeOf(DeleteLangBtn.prototype), 'constructor', this).apply(this, arguments);
+        _get(Object.getPrototypeOf(CustomBtn.prototype), 'constructor', this).apply(this, arguments);
     }
 
-    _createClass(DeleteLangBtn, [{
+    _createClass(CustomBtn, [{
         key: 'createdCallback',
 
         // Fires when an instance of the element is created.
@@ -352,12 +359,12 @@ var DeleteLangBtn = (function (_HTMLElement) {
         /*jshint unused:false*/
     }]);
 
-    return DeleteLangBtn;
+    return CustomBtn;
 })(HTMLElement);
 
-exports.DeleteLangBtn = DeleteLangBtn;
+exports.CustomBtn = CustomBtn;
 
-document.registerElement('delete-lang-btn', DeleteLangBtn);
+document.registerElement('custom-btn', CustomBtn);
 
 },{}],6:[function(require,module,exports){
 /*exported WorkflowNavbar, webComponents */
@@ -769,6 +776,7 @@ var ConfigInCharge = (function () {
             $('.container-manage-select').find('form').empty();
 
             var drawLanguagesIncharge = function drawLanguagesIncharge(obj) {
+                $('.container-manage-select').find('.row-language').last().attr('row-id', obj.id);
                 $('.container-manage-select').find('.language-title').last().html(obj.language.languageName);
                 $('.container-manage-select').find('input').last().val(obj.inCharge);
             };
@@ -778,7 +786,7 @@ var ConfigInCharge = (function () {
                     if (status === 'success') {
                         if (count === array.length - 1) {
                             drawLanguagesIncharge(array[count]);
-                            _this7.setEventToDeleteBtns();
+                            _this7.setEventToCustomBtns(array);
                             return;
                         } else {
                             drawLanguagesIncharge(array[count]);
@@ -804,21 +812,20 @@ var ConfigInCharge = (function () {
             });
         }
     }, {
-        key: 'setEventToDeleteBtns',
-        value: function setEventToDeleteBtns() {
+        key: 'setEventToCustomBtns',
+        value: function setEventToCustomBtns(array) {
             var _this9 = this;
 
-            $('delete-lang-btn').each(function (index, el) {
-                $(el).attr('data-ind', index);
+            $('custom-btn').each(function (index, el) {
                 $(el).on('DELETE_LANGUAGE', function (ev) {
-                    _this9.deleteLang($(ev.target).attr('data-ind'));
+                    _this9.deleteLang(array[index]);
                 });
             });
         }
     }, {
         key: 'deleteLang',
-        value: function deleteLang(ind) {
-            console.log('delete', ind);
+        value: function deleteLang(obj) {
+            console.log('delete', obj.id);
         }
     }]);
 
@@ -895,26 +902,19 @@ var ConfigProviders = (function () {
             $('.container-manage-select').find('form').empty();
 
             var drawLanguagesIncharge = function drawLanguagesIncharge(obj) {
-                console.log(obj);
-                $('.container-manage-select').find('.row-language').last().attr('row-id', obj.id);
-                $('.container-manage-select').find('.language-title').last().html(obj.language.languageName);
-                _modulesUtils.Utils.populateSelect(_this13.posibleProviders, $('.container-manage-select').find('.provider-select').last(), 'providerName');
-                $('.container-manage-select').find('.provider-select').last().val(obj.provider.id);
-                $('.container-manage-select').find('.provider-select').last().on('change', function (ev) {
-                    //console.log( $(this).parent().parent().attr('row-id') );
-                    var obj = {
-                        id: $(this).parent().parent().attr('row-id'),
-                        newProvider: this.value
-                    };
-                    this.changeProviderRow(obj);
-                });
+                var inp = $('.container-manage-select').find('input').last(),
+                    sel = $('.container-manage-select').find('.provider-select').last(),
+                    tit = $('.container-manage-select').find('.language-title').last(),
+                    row = $('.container-manage-select').find('.row-language').last(),
+                    wrapConfirm = $('.container-manage-select').find('.wrap-btns-confirm');
 
-                /*$('.container-manage-select').find('.language-title').last().attr('data-key', 'model[' + count + '].language.languageName');
-                $('.container-manage-select').find('.provider-select').last().attr('data-key', 'model[' + count + '].provider.id');
-                $('.container-manage-select').find('.provider-select').last().on('change', function(ev){
-                    console.log('fooModel', fooModel);
-                });
-                DataBind.bind(this.container, fooModel);*/
+                wrapConfirm.hide();
+                row.attr('row-id', obj.id);
+                tit.html(obj.language.languageName);
+                inp.val(obj.provider.providerName);
+                sel.hide();
+                _modulesUtils.Utils.populateSelect(_this13.posibleProviders, sel, 'providerName');
+                sel.val(obj.provider.id);
             };
 
             var iteratorToDrawRows = function iteratorToDrawRows() {
@@ -922,7 +922,7 @@ var ConfigProviders = (function () {
                     if (status === 'success') {
                         if (count === array.length - 1) {
                             drawLanguagesIncharge(array[count]);
-                            _this13.setEventToDeleteBtns();
+                            _this13.setEventToCustomBtns(array);
                             return;
                         } else {
                             drawLanguagesIncharge(array[count]);
@@ -936,28 +936,62 @@ var ConfigProviders = (function () {
             iteratorToDrawRows();
         }
     }, {
-        key: 'setEventToDeleteBtns',
-        value: function setEventToDeleteBtns() {
+        key: 'setEventToCustomBtns',
+        value: function setEventToCustomBtns(array) {
             var _this14 = this;
 
-            $('delete-lang-btn').each(function (index, el) {
-                $(el).attr('data-ind', index);
+            $('.btn-delete').each(function (index, el) {
                 $(el).on('DELETE_PROVIDER', function (ev) {
-                    _this14.deleteLang($(ev.target).attr('data-ind'));
+                    _this14.deleteLang(array[index]);
+                });
+            });
+
+            $('.btn-modify').each(function (index, el) {
+                $(el).on('MODIFY_PROVIDER', function (ev) {
+                    var row = $('.row-language[row-id="' + array[index].id + '"]');
+                    _this14.showConfirm(row, true);
+                });
+            });
+
+            $('.btn-acept').each(function (index, el) {
+                $(el).on('ACEPT_CHANGE_PROVIDER', function (ev) {
+                    var row = $('.row-language[row-id="' + array[index].id + '"]');
+                    _this14.changeProviderRow(array[index], row);
+                });
+            });
+
+            $('.btn-cancel').each(function (index, el) {
+                $(el).on('CANCEL_CHANGE_PROVIDER', function (ev) {
+                    var row = $('.row-language[row-id="' + array[index].id + '"]');
+                    row.find('.provider-select').val(array[index].provider.id);
+                    _this14.showConfirm(row, false);
                 });
             });
         }
     }, {
         key: 'changeProviderRow',
-        value: function changeProviderRow(obj) {
+        value: function changeProviderRow(obj, row) {
             var _this15 = this;
 
-            _modulesTranslateAPI.TranslateAPI.addProvider(obj).then(function (resp) {
-                _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (resp) {
-                    _this15.providersLinkedInCharge = resp;
-                    _this15.renderProviders(_this15.providersLinkedInCharge);
+            row.find('.wrap-btns-confirm').find('button').prop('disabled', 'true');
+            if (obj.provider.id === row.find('.provider-select').val()) {
+                this.showConfirm(row, false);
+                row.find('.wrap-btns-confirm').find('button').prop('disabled', 'false');
+            } else {
+                _modulesTranslateAPI.TranslateAPI.modifyProvider(obj).then(function (resp) {
+                    _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (resp) {
+                        _this15.providersLinkedInCharge = resp;
+                        _this15.showConfirm(row, false);
+                        _this15.renderProviders(_this15.providersLinkedInCharge);
+                        //row.find('.wrap-btns-confirm').find('button').prop('disabled', 'false');
+                    });
                 });
-            });
+            }
+        }
+    }, {
+        key: 'deleteLang',
+        value: function deleteLang(obj) {
+            console.log('delete', obj.id);
         }
     }, {
         key: 'postNewRow',
@@ -972,9 +1006,35 @@ var ConfigProviders = (function () {
             });
         }
     }, {
-        key: 'deleteLang',
-        value: function deleteLang(ind) {
-            console.log('delete', ind);
+        key: 'showConfirm',
+        value: function showConfirm(row, bool) {
+            if (bool === true) {
+                row.find('.provider-select').show();
+                row.find('input').hide();
+                row.find('.wrap-btns-primary').animate({
+                    opacity: 0
+                }, 0.4, function () {
+                    row.find('.wrap-btns-primary').hide();
+                    row.find('.wrap-btns-confirm').css('opacity', 0);
+                    row.find('.wrap-btns-confirm').show();
+                    row.find('.wrap-btns-confirm').animate({
+                        opacity: 1
+                    }, 0.4);
+                });
+            } else if (bool === false) {
+                row.find('.provider-select').hide();
+                row.find('input').show();
+                row.find('.wrap-btns-confirm').animate({
+                    opacity: 0
+                }, 0.4, function () {
+                    row.find('.wrap-btns-confirm').hide();
+                    row.find('.wrap-btns-primary').css('opacity', 0);
+                    row.find('.wrap-btns-primary').show();
+                    row.find('.wrap-btns-primary').animate({
+                        opacity: 1
+                    }, 0.4);
+                });
+            }
         }
     }]);
 
@@ -1007,7 +1067,7 @@ var SelectLanguages = (function () {
         /*$('#deleteLang').on('click', (ev, ind) => {
             console.log(ev, ind);
         })*/
-        $('delete-lang-btn').each(function (index, el) {
+        $('custom-btn').each(function (index, el) {
             $(el).on('DELETE_LANGUAGE', function (ev) {
                 console.log('click', ev.target.attributes);
                 _this17.deleteLang($(ev.target).attr('data-ind'));

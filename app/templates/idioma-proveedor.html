@@ -2,10 +2,17 @@
     <h3 class="language-title"></h3>
 </div>
 <div class="col-xs-6">
-    <!-- <input disabled type="text" name="email" class="form-control" placeholder="Introduce el email del resposable..."> -->
+    <input disabled type="text" name="email" class="form-control">
     <select class="provider-select form-control">
     </select>
 </div>
 <div class="col-xs-3">
-    <delete-lang-btn data-class="btn-danger" label="Eliminar idioma" event="DELETE_PROVIDER"></delete-lang-btn>
+	<div class="wrap-btns-primary">
+		<custom-btn class="btn-modify" data-class="btn-secondary" label="Modificar" event="MODIFY_PROVIDER"></custom-btn>
+    	<custom-btn class="btn-delete" data-class="btn-danger" label="Eliminar" event="DELETE_PROVIDER"></custom-btn>
+	</div>
+    <div class="wrap-btns-confirm">
+		<custom-btn class="btn-acept" data-class="btn-secondary" label="Aceptar" event="ACEPT_CHANGE_PROVIDER"></custom-btn>
+    	<custom-btn class="btn-cancel" data-class="btn-danger" label="Cancelar" event="CANCEL_CHANGE_PROVIDER"></custom-btn>
+	</div>
 </div>

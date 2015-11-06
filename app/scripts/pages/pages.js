@@ -271,6 +271,7 @@ export class ConfigInCharge {
         $('.container-manage-select').find('form').empty();
 
         const drawLanguagesIncharge = (obj) => {
+            $('.container-manage-select').find('.row-language').last().attr('row-id', obj.id);
             $('.container-manage-select').find('.language-title').last().html(obj.language.languageName);
             $('.container-manage-select').find('input').last().val(obj.inCharge);
         };
@@ -281,7 +282,7 @@ export class ConfigInCharge {
                     if (status === 'success') {
                         if (count === array.length - 1) {
                             drawLanguagesIncharge(array[count]);
-                            this.setEventToDeleteBtns();
+                            this.setEventToCustomBtns(array);
                             return;
                         } else {
                             drawLanguagesIncharge(array[count]);
@@ -304,17 +305,16 @@ export class ConfigInCharge {
         });
     }
 
-    setEventToDeleteBtns() {
-        $('delete-lang-btn').each((index, el) => {
-            $(el).attr('data-ind', index);
+    setEventToCustomBtns(array) {
+        $('custom-btn').each((index, el) => {
             $(el).on('DELETE_LANGUAGE', (ev) => {
-                this.deleteLang($(ev.target).attr('data-ind'));
+                this.deleteLang(array[index]);
             });
         });
     }
 
-    deleteLang(ind) {
-        console.log('delete', ind);
+    deleteLang(obj) {
+        console.log('delete', obj.id);
     }
 }
 
@@ -373,27 +373,19 @@ export class ConfigProviders {
         $('.container-manage-select').find('form').empty();
 
         const drawLanguagesIncharge = (obj) => {
-            console.log(obj);
-            $('.container-manage-select').find('.row-language').last().attr('row-id', obj.id);
-            $('.container-manage-select').find('.language-title').last().html(obj.language.languageName);
-            Utils.populateSelect(this.posibleProviders, $('.container-manage-select').find('.provider-select').last(), 'providerName');
-            $('.container-manage-select').find('.provider-select').last().val(obj.provider.id);
-            $('.container-manage-select').find('.provider-select').last().on('change', function(ev) {
-                //console.log( $(this).parent().parent().attr('row-id') );
-                let obj = {
-                    id : $(this).parent().parent().attr('row-id'),
-                    newProvider : this.value
-                };
-                this.changeProviderRow(obj);
-            });
+            let inp = $('.container-manage-select').find('input').last(),
+                sel = $('.container-manage-select').find('.provider-select').last(),
+                tit = $('.container-manage-select').find('.language-title').last(),
+                row = $('.container-manage-select').find('.row-language').last(),
+                wrapConfirm = $('.container-manage-select').find('.wrap-btns-confirm');
 
-
-            /*$('.container-manage-select').find('.language-title').last().attr('data-key', 'model[' + count + '].language.languageName');
-            $('.container-manage-select').find('.provider-select').last().attr('data-key', 'model[' + count + '].provider.id');
-            $('.container-manage-select').find('.provider-select').last().on('change', function(ev){
-                console.log('fooModel', fooModel);
-            });
-            DataBind.bind(this.container, fooModel);*/
+            wrapConfirm.hide();
+            row.attr('row-id', obj.id);
+            tit.html(obj.language.languageName);
+            inp.val(obj.provider.providerName);
+            sel.hide();
+            Utils.populateSelect(this.posibleProviders, sel, 'providerName');
+            sel.val(obj.provider.id);
         };
 
         const iteratorToDrawRows = () => {
@@ -402,7 +394,7 @@ export class ConfigProviders {
                     if (status === 'success') {
                         if (count === array.length - 1) {
                             drawLanguagesIncharge(array[count]);
-                            this.setEventToDeleteBtns();
+                            this.setEventToCustomBtns(array);
                             return;
                         } else {
                             drawLanguagesIncharge(array[count]);
@@ -416,22 +408,56 @@ export class ConfigProviders {
         iteratorToDrawRows();
     }
 
-    setEventToDeleteBtns() {
-        $('delete-lang-btn').each((index, el) => {
-            $(el).attr('data-ind', index);
+
+    setEventToCustomBtns(array) {
+        $('.btn-delete').each((index, el) => {
             $(el).on('DELETE_PROVIDER', (ev) => {
-                this.deleteLang($(ev.target).attr('data-ind'));
+                this.deleteLang(array[index]);
+            });
+        });
+
+        $('.btn-modify').each((index, el) => {
+            $(el).on('MODIFY_PROVIDER', (ev) => {
+                let row = $('.row-language[row-id="' + array[index].id + '"]');
+                this.showConfirm(row, true);
+            });
+        });
+
+        $('.btn-acept').each((index, el) => {
+            $(el).on('ACEPT_CHANGE_PROVIDER', (ev) => {
+                let row = $('.row-language[row-id="' + array[index].id + '"]');
+                this.changeProviderRow(array[index], row);
+            });
+        });
+
+        $('.btn-cancel').each((index, el) => {
+            $(el).on('CANCEL_CHANGE_PROVIDER', (ev) => {
+                let row = $('.row-language[row-id="' + array[index].id + '"]');
+                row.find('.provider-select').val( array[index].provider.id);
+                this.showConfirm(row, false);
             });
         });
     }
 
-    changeProviderRow(obj){
-        TranslateAPI.addProvider(obj).then((resp) => {
-            TranslateAPI.getAllProviders().then((resp) => {
-                this.providersLinkedInCharge = resp;
-                this.renderProviders(this.providersLinkedInCharge);
+    changeProviderRow(obj, row) {
+        row.find('.wrap-btns-confirm').find('button').prop('disabled', 'true');
+        if (obj.provider.id === row.find('.provider-select').val()){
+            this.showConfirm(row, false);
+            row.find('.wrap-btns-confirm').find('button').prop('disabled', 'false');
+        }else{
+            TranslateAPI.modifyProvider(obj).then((resp) => {
+                TranslateAPI.getAllProviders().then((resp) => {
+                    this.providersLinkedInCharge = resp;
+                    this.showConfirm(row, false);
+                    this.renderProviders(this.providersLinkedInCharge);
+                    //row.find('.wrap-btns-confirm').find('button').prop('disabled', 'false');
+                });
             });
-        });
+        }
+    }
+
+    deleteLang(obj) {
+        console.log('delete', obj.id);
     }
 
     postNewRow(obj) {
@@ -443,8 +469,34 @@ export class ConfigProviders {
         });
     }
 
-    deleteLang(ind) {
-        console.log('delete', ind);
+    showConfirm(row, bool) {
+        if (bool === true) {
+            row.find('.provider-select').show();
+            row.find('input').hide();
+            row.find('.wrap-btns-primary').animate({
+                opacity: 0
+            }, 0.4, () => {
+                row.find('.wrap-btns-primary').hide();
+                row.find('.wrap-btns-confirm').css('opacity', 0);
+                row.find('.wrap-btns-confirm').show();
+                row.find('.wrap-btns-confirm').animate({
+                    opacity: 1
+                }, 0.4);
+            });
+        } else if (bool === false) {
+            row.find('.provider-select').hide();
+            row.find('input').show();
+            row.find('.wrap-btns-confirm').animate({
+                opacity: 0
+            }, 0.4, () => {
+                row.find('.wrap-btns-confirm').hide();
+                row.find('.wrap-btns-primary').css('opacity', 0);
+                row.find('.wrap-btns-primary').show();
+                row.find('.wrap-btns-primary').animate({
+                    opacity: 1
+                }, 0.4);
+            });
+        }
     }
 }
 
@@ -469,7 +521,7 @@ export class SelectLanguages {
         /*$('#deleteLang').on('click', (ev, ind) => {
             console.log(ev, ind);
         })*/
-        $('delete-lang-btn').each((index, el) => {
+        $('custom-btn').each((index, el) => {
             $(el).on('DELETE_LANGUAGE', (ev) => {
                 console.log('click', ev.target.attributes);
                 this.deleteLang($(ev.target).attr('data-ind'));

@@ -1,4 +1,4 @@
-export class DeleteLangBtn extends HTMLElement {
+export class CustomBtn extends HTMLElement {
     // Fires when an instance of the element is created.
     createdCallback() {
         $(this).append( '<button type="button" class="btn '+$(this).attr('data-class')+'">'+$(this).attr( 'label' )+'</button>' );
@@ -16,4 +16,4 @@ export class DeleteLangBtn extends HTMLElement {
     attributeChangedCallback(attr, oldVal, newVal) {}
     /*jshint unused:false*/
 }
-document.registerElement('delete-lang-btn', DeleteLangBtn);
+document.registerElement('custom-btn', CustomBtn);

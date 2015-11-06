@@ -54,14 +54,21 @@ export class TranslateAPI extends AjaxRequest {
     static addLanguageAndPersonInCharge(obj) {
         return super.post({
             url: '/service/addLanguageAndPersonInCharge',
-            data : obj
+            params : obj
         });
     }
 
     static addProvider(obj) {
         return super.post({
             url: '/service/addProvider',
-            data : obj
+            params : obj
+        });
+    }
+
+    static modifyProvider(obj) {
+        return super.put({
+            url: '/service/modifyProvider',
+            params : obj
         });
     }
 
