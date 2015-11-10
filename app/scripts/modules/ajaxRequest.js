@@ -58,10 +58,13 @@ export class AjaxRequest {
             timeout: null
         };
         peticionConfig = $.extend({}, peticionConfig, config);
+        peticionConfig.params = JSON.stringify(peticionConfig.params ); 
+
 
         return $.ajax({
             method: 'DELETE',
-            url: peticionConfig.url
+            url: peticionConfig.url,
+            data: peticionConfig.params
         });
     }
 }

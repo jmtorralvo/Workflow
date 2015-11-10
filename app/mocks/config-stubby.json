@@ -37,4 +37,17 @@
         "latency": 500,
         "file": "responses-stubby/foo.json"
     }
+},{
+    "request": {
+        "url": "^/service/deleteLangProvider$",
+        "method": "DELETE"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "latency": 500,
+        "file": "responses-stubby/foo.json"
+    }
 }]

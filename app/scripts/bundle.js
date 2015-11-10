@@ -90,10 +90,12 @@ var AjaxRequest = (function () {
                 timeout: null
             };
             peticionConfig = $.extend({}, peticionConfig, config);
+            peticionConfig.params = JSON.stringify(peticionConfig.params);
 
             return $.ajax({
                 method: 'DELETE',
-                url: peticionConfig.url
+                url: peticionConfig.url,
+                data: peticionConfig.params
             });
         }
     }]);
@@ -192,6 +194,14 @@ var TranslateAPI = (function (_AjaxRequest) {
             });
         }
     }, {
+        key: 'deleteLangProvider',
+        value: function deleteLangProvider(obj) {
+            return _get(Object.getPrototypeOf(TranslateAPI), 'del', this).call(this, {
+                url: '/service/deleteLangProvider',
+                params: obj
+            });
+        }
+    }, {
         key: 'modifyProvider',
         value: function modifyProvider(obj) {
             return _get(Object.getPrototypeOf(TranslateAPI), 'put', this).call(this, {
@@ -230,14 +240,9 @@ var Utils = (function () {
         _classCallCheck(this, Utils);
     }
 
+    // EXCELLL
+
     _createClass(Utils, null, [{
-        key: 'isOdd',
-        value: function isOdd(num) {
-            var resp = null;
-            resp = num % 2 === 0 ? true : false;
-            return resp;
-        }
-    }, {
         key: 'exportExcel',
         value: function exportExcel(filename, wrapArray, ev, headerTemplate) {
             var a = document.createElement('a'),
@@ -251,6 +256,22 @@ var Utils = (function () {
             a.download = filename + '.xls';
             a.click();
             ev.preventDefault();
+        }
+
+        //// DATE
+    }, {
+        key: 'formatDate',
+        value: function formatDate(time) {
+            var date = new Date(time),
+                hours = date.getHours(),
+                minutes = date.getMinutes(),
+                ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+
+            return date.getDate() + '/' + Number(date.getMonth() + 1) + '/' + date.getFullYear();
         }
     }, {
         key: 'getCurrentDate',
@@ -266,12 +287,22 @@ var Utils = (function () {
             var todayDate = day + '/' + month + '/' + year;
             return todayDate.toString();
         }
+
+        /// LITERALES
     }, {
         key: 'getPriorityLabel',
         value: function getPriorityLabel(num) {
-            var pLabels = ['Baja', 'Media', 'Alta'];
-            return pLabels[num];
+            var labels = ['Baja', 'Media', 'Alta'];
+            return labels[num];
         }
+    }, {
+        key: 'getState',
+        value: function getState(num) {
+            var labels = ['Pendiente de traducción', 'Pendiente de aprobación', 'Aprobado'];
+            return labels[num];
+        }
+
+        /// MANAGE SELECTS
     }, {
         key: 'populateSelect',
         value: function populateSelect(array, elem, propName) {
@@ -283,18 +314,14 @@ var Utils = (function () {
                 elem[0].appendChild(opt);
             }
         }
+
+        ///VALIDATIONS
     }, {
         key: 'validateEmail',
         value: function validateEmail(email) {
             var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
             return re.test(email);
         }
-    }, {
-        key: 'getLangNameById',
-        value: function getLangNameById(array, id) {}
-    }, {
-        key: 'getIdLangByName',
-        value: function getIdLangByName(array, name) {}
     }]);
 
     return Utils;
@@ -406,6 +433,16 @@ var WorkflowApp = (function () {
             var dest = $(ev.target).find('a').attr('href').replace('#', '');
             _this.changeState(dest);
         });
+
+        /*        elem.tooltip({
+                    items: '[data-tt]',
+                    content: function() {
+                        var element = $(this);
+                        if (element.is('[data-tt]')) {
+                            return element.attr("tt");
+                        }
+                    }
+                });*/
     }
 
     _createClass(WorkflowApp, [{
@@ -434,11 +471,6 @@ var WorkflowApp = (function () {
             }
             if (newState === 'config-proveedores') {
                 this.currentSec = new pages.ConfigProviders($('#section-view'));
-            }
-            if (newState === 'select-idioma-empresa') {
-                this.currentSec = new pages.SelectLanguages($('#section-view'));
-                //this.currentSec.deleteLang(1);
-                //pages.SelectLanguages.foo();
             }
         }
     }, {
@@ -496,6 +528,7 @@ var TransationsList = (function () {
 
         _classCallCheck(this, TransationsList);
 
+        var a = new Date();
         this.model = undefined;
         var wrap = $('#wrap-listado-traducciones');
 
@@ -540,7 +573,10 @@ var TransationsList = (function () {
                     }, {
                         field: 'currentState',
                         title: 'Estado',
-                        sortable: true
+                        sortable: true,
+                        formatter: function formatter(value) {
+                            return _modulesUtils.Utils.getState(value);
+                        }
                     }, {
                         field: 'priority',
                         title: 'Prioridad',
@@ -555,7 +591,10 @@ var TransationsList = (function () {
                     }, {
                         field: 'initialDate',
                         title: 'Fecha Inicio',
-                        sortable: true
+                        sortable: true,
+                        formatter: function formatter(value) {
+                            return _modulesUtils.Utils.formatDate(value);
+                        }
                     }]
                 });
 
@@ -565,6 +604,10 @@ var TransationsList = (function () {
 
             $('.btnExport-modal').on('click', function (ev) {
                 _modulesUtils.Utils.exportExcel('Listado detalle traducciones ' + _modulesUtils.Utils.getCurrentDate(), [$('#translate-table-detail'), $('#translate-table-historical'), $('#translate-table-comments')], ev, '<div class="row margin-bottom-lg"><div class="col-xs-12"><h2>Detalle Traducción</h2></div></div>');
+            });
+
+            $('.btn-publish').on('click', function (ev) {
+                _this2.publishTranslate(ev.currentTarget.attributes['data-id'].value);
             });
 
             //Filter
@@ -585,7 +628,7 @@ var TransationsList = (function () {
                 data: resp.items,
                 search: false,
                 onClickCell: function onClickCell(field, value, row, element) {
-                    if (field !== 'inCharge') {
+                    if (field !== 'inCharge' && field !== 'currentState') {
                         _this3.displayDetails(field, value, row, element);
                     }
                 },
@@ -617,7 +660,10 @@ var TransationsList = (function () {
                 }, {
                     field: 'currentState',
                     title: 'Estado',
-                    sortable: true
+                    sortable: true,
+                    formatter: function formatter(value) {
+                        return _modulesUtils.Utils.getState(value);
+                    }
                 }, {
                     field: 'priority',
                     title: 'Prioridad',
@@ -632,7 +678,17 @@ var TransationsList = (function () {
                 }, {
                     field: 'initialDate',
                     title: 'Fecha Inicio',
-                    sortable: true
+                    sortable: true,
+                    formatter: function formatter(value, row, index) {
+                        return _modulesUtils.Utils.formatDate(value);
+                    }
+                }, {
+                    field: 'currentState',
+                    title: 'Publicar',
+                    formatter: function formatter(value, row, index) {
+                        var tmp = value === 2 ? '<button type="button" id="publish-btn-' + index + '" class="btn btn-primary btn-publish" data-id="' + row.id + '">Aceptar</button>' : '<button title="Aún no está traducido y no puede ser publicado" disabled type="button" class="btn btn-primary btn-publish data-id=' + row.id + '">Aceptar</button>';
+                        return tmp;
+                    }
                 }]
             });
         }
@@ -665,16 +721,16 @@ var TransationsList = (function () {
                     title: 'Solicitado por'
                 }, {
                     field: 'currentState',
-                    title: 'Estado'
+                    title: 'Estado',
+                    formatter: function formatter(value) {
+                        return _modulesUtils.Utils.getState(value);
+                    }
                 }, {
                     field: 'priority',
                     title: 'Prioridad',
                     formatter: function formatter(value, row, index) {
                         return _modulesUtils.Utils.getPriorityLabel(value);
                     }
-                }, {
-                    field: 'currentState',
-                    title: 'Estado'
                 }]
             });
             $('#translate-table-historical').bootstrapTable({
@@ -685,10 +741,16 @@ var TransationsList = (function () {
                     title: 'Tarea'
                 }, {
                     field: 'initialDate',
-                    title: 'Fecha inicio'
+                    title: 'Fecha inicio',
+                    formatter: function formatter(value, row, index) {
+                        return _modulesUtils.Utils.formatDate(value);
+                    }
                 }, {
                     field: 'finalDate',
-                    title: 'Fecha final'
+                    title: 'Fecha final',
+                    formatter: function formatter(value, row, index) {
+                        return _modulesUtils.Utils.formatDate(value);
+                    }
                 }]
             });
             $('#translate-modal-details').find('.comments').html(row.detail.comments);
@@ -707,6 +769,11 @@ var TransationsList = (function () {
             });
             $('#translate-table').bootstrapTable('load', this.model.items);
             //DataBind.bind(wrap, this.model.items);
+        }
+    }, {
+        key: 'publishTranslate',
+        value: function publishTranslate(id) {
+            console.log('publicar traducción ' + id);
         }
     }]);
 
@@ -978,12 +1045,11 @@ var ConfigProviders = (function () {
                 this.showConfirm(row, false);
                 row.find('.wrap-btns-confirm').find('button').prop('disabled', 'false');
             } else {
-                _modulesTranslateAPI.TranslateAPI.modifyProvider(obj).then(function (resp) {
-                    _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (resp) {
+                _modulesTranslateAPI.TranslateAPI.modifyProvider(obj).then(function (respMod) {
+                    _modulesTranslateAPI.TranslateAPI.getProvidersInCharge().then(function (resp) {
                         _this15.providersLinkedInCharge = resp;
                         _this15.showConfirm(row, false);
                         _this15.renderProviders(_this15.providersLinkedInCharge);
-                        //row.find('.wrap-btns-confirm').find('button').prop('disabled', 'false');
                     });
                 });
             }
@@ -991,24 +1057,31 @@ var ConfigProviders = (function () {
     }, {
         key: 'deleteLang',
         value: function deleteLang(obj) {
-            console.log('delete', obj.id);
-        }
-    }, {
-        key: 'postNewRow',
-        value: function postNewRow(obj) {
             var _this16 = this;
 
-            _modulesTranslateAPI.TranslateAPI.addProvider(obj).then(function (resp) {
-                _modulesTranslateAPI.TranslateAPI.getAllProviders().then(function (resp) {
+            _modulesTranslateAPI.TranslateAPI.deleteLangProvider(obj).then(function (respDel) {
+                _modulesTranslateAPI.TranslateAPI.getProvidersInCharge().then(function (resp) {
                     _this16.providersLinkedInCharge = resp;
                     _this16.renderProviders(_this16.providersLinkedInCharge);
                 });
             });
         }
     }, {
+        key: 'postNewRow',
+        value: function postNewRow(obj) {
+            var _this17 = this;
+
+            _modulesTranslateAPI.TranslateAPI.addProvider(obj).then(function (respPost) {
+                _modulesTranslateAPI.TranslateAPI.getProvidersInCharge().then(function (resp) {
+                    _this17.providersLinkedInCharge = resp;
+                    _this17.renderProviders(_this17.providersLinkedInCharge);
+                });
+            });
+        }
+    }, {
         key: 'showConfirm',
-        value: function showConfirm(row, bool) {
-            if (bool === true) {
+        value: function showConfirm(row, sense) {
+            if (sense === true) {
                 row.find('.provider-select').show();
                 row.find('input').hide();
                 row.find('.wrap-btns-primary').animate({
@@ -1021,7 +1094,7 @@ var ConfigProviders = (function () {
                         opacity: 1
                     }, 0.4);
                 });
-            } else if (bool === false) {
+            } else if (sense === false) {
                 row.find('.provider-select').hide();
                 row.find('input').show();
                 row.find('.wrap-btns-confirm').animate({
@@ -1042,61 +1115,5 @@ var ConfigProviders = (function () {
 })();
 
 exports.ConfigProviders = ConfigProviders;
-
-var SelectLanguages = (function () {
-    function SelectLanguages(container) {
-        var _this17 = this;
-
-        _classCallCheck(this, SelectLanguages);
-
-        //http://codepen.io/grnadav/pen/ptJKg?editors=101
-        this.wrap = $('#wrap-select-idioma-empresa');
-        this.languajesProvidersModel = {
-            relations: [{
-                lang: 'Inglés',
-                prov: 'quest'
-            }, {
-                lang: 'Francés',
-                prov: 'lingua'
-            }, {
-                lang: 'Portugués',
-                prov: 'wordBee'
-            }]
-        };
-
-        /*$('#deleteLang').on('click', (ev, ind) => {
-            console.log(ev, ind);
-        })*/
-        $('custom-btn').each(function (index, el) {
-            $(el).on('DELETE_LANGUAGE', function (ev) {
-                console.log('click', ev.target.attributes);
-                _this17.deleteLang($(ev.target).attr('data-ind'));
-            });
-        });
-
-        $('#confirmAddLanguageBtn').on('click', function (ev) {
-            _this17.addLang();
-        });
-
-        DataBind.bind(this.wrap, this.languajesProvidersModel);
-    }
-
-    _createClass(SelectLanguages, [{
-        key: 'deleteLang',
-        value: function deleteLang(ind) {
-            console.log('delete', ind);
-        }
-    }, {
-        key: 'addLang',
-        value: function addLang() {
-            console.log('Añadimos un idioma');
-            $('#addLangModal').modal('hide');
-        }
-    }]);
-
-    return SelectLanguages;
-})();
-
-exports.SelectLanguages = SelectLanguages;
 
 },{"../modules/translateAPI":3,"../modules/utils":4}]},{},[1]);

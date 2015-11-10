@@ -6,10 +6,10 @@
         "uri": "http://www.repsol.com",
         "originalLanguage": "ES",
         "destinationLanguage": "EN",
-        "currentState": "Pendiente aprob.",
+        "currentState": 2,
         "priority": 2,
         "mode": "Manual",
-        "initialDate": "10/03/15",
+        "initialDate": 1447029057244,
         "detail": {
             "comments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
             "notify": true,
@@ -18,16 +18,16 @@
             "channel": "Portal",
             "historical": [{
                 "state": "Enviado a traducción",
-                "initialDate": "10/03/15",
-                "finalDate": "14/03/05"
+                "initialDate": 1447152122257,
+                "finalDate": 1447153119195
             }, {
                 "state": "Traduciendo",
-                "initialDate": "14/03/15",
-                "finalDate": "22/03/05"
+                "initialDate": 1447153053195,
+                "finalDate": 1427153119195
             }, {
                 "state": "Pendiente de aprobación",
-                "initialDate": "22/03/15",
-                "finalDate": "24/03/05"
+                "initialDate": 1447153053195,
+                "finalDate": 1447153119195
             }],
             "components": [{
                 "label": "Carrousel Imagenes"
@@ -41,10 +41,10 @@
         "uri": "http://www.repsol.com",
         "originalLanguage": "ES",
         "destinationLanguage": "POR, ALEM",
-        "currentState": "Pendiente trad.",
+        "currentState": 1,
         "priority": 1,
         "mode": "Automático",
-        "initialDate": "22/03/16",
+        "initialDate": 1447053059110,
         "detail": {
             "comments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
             "notify": false,
@@ -53,12 +53,12 @@
             "channel": "Negocio",
             "historical": [{
                 "state": "Enviado a traducción",
-                "initialDate": "22/03/15",
-                "finalDate": "24/03/05"
+                "initialDate": 1244153053195,
+                "finalDate": 1447853053195
             }, {
                 "state": "Traduciendo",
-                "initialDate": "24/03/15",
-                "finalDate": ""
+                "initialDate": 1447153053195,
+                "finalDate": 1447853053195
             }],
             "components": [{
                 "label": "Visor 2"
@@ -72,10 +72,10 @@
         "uri": "http://www.repsol.com",
         "originalLanguage": "ES",
         "destinationLanguage": "POR, ALEM",
-        "currentState": "Pendiente trad.",
+        "currentState": 1,
         "priority": 0,
         "mode": "Automático",
-        "initialDate": "22/03/16",
+        "initialDate": 1447153081393,
         "detail": {
             "comments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum risus, dapibus sed turpis at, consequat varius massa. Vivamus vestibulum consectetur lacinia. Cras ut gravida turpis.",
             "notify": false,
@@ -84,12 +84,12 @@
             "channel": "Negocio",
             "historical": [{
                 "state": "Enviado a traducción",
-                "initialDate": "22/03/15",
-                "finalDate": "24/03/05"
+                "initialDate": 1447153053195,
+                "finalDate": 1447853053195
             }, {
                 "state": "Traduciendo",
-                "initialDate": "24/03/15",
-                "finalDate": ""
+                "initialDate": 1447153053195,
+                "finalDate": 1447853053195
             }],
             "components": [{
                 "label": "Visor 2"

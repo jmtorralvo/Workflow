@@ -476,7 +476,7 @@ module.exports = function(grunt) {
             'concurrent:server',
             'postcss',
             'browserSync:livereload',
-            'stubby',
+            'stubby:stubsServer',
             'jshint',
             'watch'
         ]);

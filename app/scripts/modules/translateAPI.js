@@ -65,6 +65,13 @@ export class TranslateAPI extends AjaxRequest {
         });
     }
 
+    static deleteLangProvider(obj) {
+        return super.del({
+            url: '/service/deleteLangProvider',
+            params : obj
+        });
+    }
+
     static modifyProvider(obj) {
         return super.put({
             url: '/service/modifyProvider',

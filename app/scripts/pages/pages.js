@@ -10,8 +10,10 @@ import {
 from '../modules/utils';
 
 
+
 export class TransationsList {
     constructor() {
+        let a = new Date();
         this.model = undefined;
         const wrap = $('#wrap-listado-traducciones');
 
@@ -52,7 +54,10 @@ export class TransationsList {
                 }, {
                     field: 'currentState',
                     title: 'Estado',
-                    sortable: true
+                    sortable: true,
+                    formatter: (value) => {
+                        return Utils.getState(value);
+                    }
                 }, {
                     field: 'priority',
                     title: 'Prioridad',
@@ -67,7 +72,10 @@ export class TransationsList {
                 }, {
                     field: 'initialDate',
                     title: 'Fecha Inicio',
-                    sortable: true
+                    sortable: true,
+                    formatter: (value) => {
+                        return Utils.formatDate(value);
+                    }
                 }]
             });
 
@@ -83,6 +91,9 @@ export class TransationsList {
                 '<div class="row margin-bottom-lg"><div class="col-xs-12"><h2>Detalle Traducción</h2></div></div>');
         });
 
+        $('.btn-publish').on('click', (ev) => {
+            this.publishTranslate(ev.currentTarget.attributes['data-id'].value);
+        });
 
         //Filter
         $('#filter-translations').keyup(function() {
@@ -99,7 +110,7 @@ export class TransationsList {
             data: resp.items,
             search: false,
             onClickCell: (field, value, row, element) => {
-                if (field !== 'inCharge') {
+                if (field !== 'inCharge' && field !== 'currentState') {
                     this.displayDetails(field, value, row, element);
                 }
             },
@@ -131,7 +142,10 @@ export class TransationsList {
             }, {
                 field: 'currentState',
                 title: 'Estado',
-                sortable: true
+                sortable: true,
+                formatter: (value) => {
+                    return Utils.getState(value);
+                }
             }, {
                 field: 'priority',
                 title: 'Prioridad',
@@ -146,7 +160,17 @@ export class TransationsList {
             }, {
                 field: 'initialDate',
                 title: 'Fecha Inicio',
-                sortable: true
+                sortable: true,
+                formatter: (value, row, index) => {
+                    return Utils.formatDate(value);
+                }
+            }, {
+                field: 'currentState',
+                title: 'Publicar',
+                formatter: (value, row, index) => {
+                    let tmp = (value === 2) ? '<button type="button" id="publish-btn-' + index + '" class="btn btn-primary btn-publish" data-id="'+row.id+'">Aceptar</button>' : '<button title="Aún no está traducido y no puede ser publicado" disabled type="button" class="btn btn-primary btn-publish data-id='+row.id+'">Aceptar</button>';
+                    return tmp;
+                }
             }]
         });
     }
@@ -178,16 +202,16 @@ export class TransationsList {
                 title: 'Solicitado por'
             }, {
                 field: 'currentState',
-                title: 'Estado'
+                title: 'Estado',
+                formatter: (value) => {
+                    return Utils.getState(value);
+                }
             }, {
                 field: 'priority',
                 title: 'Prioridad',
                 formatter: (value, row, index) => {
                     return Utils.getPriorityLabel(value);
                 }
-            }, {
-                field: 'currentState',
-                title: 'Estado'
             }]
         });
         $('#translate-table-historical').bootstrapTable({
@@ -198,10 +222,16 @@ export class TransationsList {
                 title: 'Tarea'
             }, {
                 field: 'initialDate',
-                title: 'Fecha inicio'
+                title: 'Fecha inicio',
+                formatter: (value, row, index) => {
+                    return Utils.formatDate(value);
+                }
             }, {
                 field: 'finalDate',
-                title: 'Fecha final'
+                title: 'Fecha final',
+                formatter: (value, row, index) => {
+                    return Utils.formatDate(value);
+                }
             }]
         });
         $('#translate-modal-details').find('.comments').html(row.detail.comments);
@@ -218,7 +248,12 @@ export class TransationsList {
         $('#translate-table').bootstrapTable('load', this.model.items);
         //DataBind.bind(wrap, this.model.items);
     }
+
+    publishTranslate(id){
+        console.log('publicar traducción '+ id);
+    }
 }
+
 
 
 export class ConfigInCharge {
@@ -366,6 +401,7 @@ export class ConfigProviders {
         });
     }
 
+
     //SRV
     renderProviders(array) {
         let count = 0;
@@ -433,7 +469,7 @@ export class ConfigProviders {
         $('.btn-cancel').each((index, el) => {
             $(el).on('CANCEL_CHANGE_PROVIDER', (ev) => {
                 let row = $('.row-language[row-id="' + array[index].id + '"]');
-                row.find('.provider-select').val( array[index].provider.id);
+                row.find('.provider-select').val(array[index].provider.id);
                 this.showConfirm(row, false);
             });
         });
@@ -441,36 +477,40 @@ export class ConfigProviders {
 
     changeProviderRow(obj, row) {
         row.find('.wrap-btns-confirm').find('button').prop('disabled', 'true');
-        if (obj.provider.id === row.find('.provider-select').val()){
+        if (obj.provider.id === row.find('.provider-select').val()) {
             this.showConfirm(row, false);
             row.find('.wrap-btns-confirm').find('button').prop('disabled', 'false');
-        }else{
-            TranslateAPI.modifyProvider(obj).then((resp) => {
-                TranslateAPI.getAllProviders().then((resp) => {
+        } else {
+            TranslateAPI.modifyProvider(obj).then((respMod) => {
+                TranslateAPI.getProvidersInCharge().then((resp) => {
                     this.providersLinkedInCharge = resp;
                     this.showConfirm(row, false);
                     this.renderProviders(this.providersLinkedInCharge);
-                    //row.find('.wrap-btns-confirm').find('button').prop('disabled', 'false');
                 });
             });
         }
     }
 
     deleteLang(obj) {
-        console.log('delete', obj.id);
-    }
-
-    postNewRow(obj) {
-        TranslateAPI.addProvider(obj).then((resp) => {
-            TranslateAPI.getAllProviders().then((resp) => {
+        TranslateAPI.deleteLangProvider(obj).then((respDel) => {
+            TranslateAPI.getProvidersInCharge().then((resp) => {
                 this.providersLinkedInCharge = resp;
                 this.renderProviders(this.providersLinkedInCharge);
             });
         });
     }
 
-    showConfirm(row, bool) {
-        if (bool === true) {
+    postNewRow(obj) {
+        TranslateAPI.addProvider(obj).then((respPost) => {
+            TranslateAPI.getProvidersInCharge().then((resp) => {
+                this.providersLinkedInCharge = resp;
+                this.renderProviders(this.providersLinkedInCharge);
+            });
+        });
+    }
+
+    showConfirm(row, sense) {
+        if (sense === true) {
             row.find('.provider-select').show();
             row.find('input').hide();
             row.find('.wrap-btns-primary').animate({
@@ -483,7 +523,7 @@ export class ConfigProviders {
                     opacity: 1
                 }, 0.4);
             });
-        } else if (bool === false) {
+        } else if (sense === false) {
             row.find('.provider-select').hide();
             row.find('input').show();
             row.find('.wrap-btns-confirm').animate({
@@ -497,50 +537,5 @@ export class ConfigProviders {
                 }, 0.4);
             });
         }
-    }
-}
-
-
-export class SelectLanguages {
-    constructor(container) {
-        //http://codepen.io/grnadav/pen/ptJKg?editors=101
-        this.wrap = $('#wrap-select-idioma-empresa');
-        this.languajesProvidersModel = {
-            relations: [{
-                lang: 'Inglés',
-                prov: 'quest'
-            }, {
-                lang: 'Francés',
-                prov: 'lingua'
-            }, {
-                lang: 'Portugués',
-                prov: 'wordBee'
-            }, ]
-        };
-
-        /*$('#deleteLang').on('click', (ev, ind) => {
-            console.log(ev, ind);
-        })*/
-        $('custom-btn').each((index, el) => {
-            $(el).on('DELETE_LANGUAGE', (ev) => {
-                console.log('click', ev.target.attributes);
-                this.deleteLang($(ev.target).attr('data-ind'));
-            });
-        });
-
-        $('#confirmAddLanguageBtn').on('click', (ev) => {
-            this.addLang();
-        });
-
-        DataBind.bind(this.wrap, this.languajesProvidersModel);
-    }
-
-    deleteLang(ind) {
-        console.log('delete', ind);
-    }
-
-    addLang() {
-        console.log('Añadimos un idioma');
-        $('#addLangModal').modal('hide');
     }
 }

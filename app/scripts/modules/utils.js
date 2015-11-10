@@ -5,12 +5,7 @@ export class Utils {
 
     }
 
-    static isOdd(num) {
-        let resp = null;
-        resp = (num % 2 === 0) ? true : false;
-        return resp;
-    }
-
+    // EXCELLL
     static exportExcel(filename, wrapArray, ev, headerTemplate) {
         let a = document.createElement('a'),
             dataType = 'data:application/vnd.ms-excel',
@@ -23,6 +18,21 @@ export class Utils {
         a.download = filename + '.xls';
         a.click();
         ev.preventDefault();
+    }
+
+
+    //// DATE
+    static formatDate(time) {
+        let date = new Date(time),
+            hours = date.getHours(),
+            minutes = date.getMinutes(),
+            ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        let strTime = hours + ':' + minutes + ' ' + ampm;
+
+        return  date.getDate() + '/' + Number(date.getMonth() + 1) + '/' + date.getFullYear();
     }
 
     static getCurrentDate() {
@@ -38,11 +48,20 @@ export class Utils {
         return todayDate.toString();
     }
 
+
+    /// LITERALES
     static getPriorityLabel(num) {
-        let pLabels = ['Baja', 'Media', 'Alta'];
-        return pLabels[num];
+        let labels = ['Baja', 'Media', 'Alta'];
+        return labels[num];
     }
 
+    static getState(num){
+     let labels = ['Pendiente de traducción', 'Pendiente de aprobación', 'Aprobado'];
+        return labels[num];
+    }
+
+
+    /// MANAGE SELECTS
     static populateSelect(array, elem, propName) {
         elem.empty();
         for (var i = 0; i < array.length; i++) {
@@ -53,16 +72,10 @@ export class Utils {
         }
     }
 
+
+    ///VALIDATIONS
     static validateEmail(email) {
         let re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         return re.test(email);
-    }
-
-    static getLangNameById(array, id){
-        
-    }
-
-    static getIdLangByName(array, name){
-
     }
 }
